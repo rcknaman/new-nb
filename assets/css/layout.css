@@ -1,0 +1,34 @@
+body {
+  margin: 0;
+  background-color: #be7b7b;
+  height: 100vh; }
+  body #header {
+    height: 70px;
+    width: 100%;
+    background-color: gray;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 5px; }
+    body #header h4 {
+      font-size: 30px;
+      padding: 0%; }
+    body #header > div {
+      display: flex;
+      flex-direction: column;
+      height: 98%;
+      justify-content: space-between; }
+      body #header > div a {
+        color: white;
+        text-decoration: none;
+        font-size: large; }
+  body #main {
+    height: fit-content;
+    width: 100%; }
+  body #footer {
+    height: 200px;
+    background-color: gray; }
+    body #footer a {
+      color: white;
+      text-decoration: none; }

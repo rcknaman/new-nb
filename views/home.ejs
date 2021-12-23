@@ -4,9 +4,87 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/layout.css" type="text/css">
     <title><%= title %> </title>
 </head>
 <body>
-    <p>here is my variable -> <%= var1 %> </p>
+
+
+    <!-- locals.user and user are samme here ..we are just writing locals.user in order to avoid error
+    as if user is not present in locals then ejs will not be able to identify 'user' alone and will 
+    throw error that 'user' variable is not defined -->
+        <div id="header">
+
+            <h4>Codial</h4>         
+            <div>
+
+                <% if(locals.user){ %>
+
+
+                <a href="/users/profile"><%= locals.user.name %> </a>
+                <a href="/users/profile"><%= locals.user.email %> </a>
+                <% }else{ %>
+
+                    <a href="/users/signin">Sign In</a>
+                    <a href="/users/signup">Sign Up</a>
+                    <% } %>
+            </div>
+        </div>
+        <div id="main">
+            <% if(locals.user){ %> 
+            <h2>Post Something</h2>
+            <form action="posts/create" method="post">
+                <textarea name="content" cols="30" rows="3" placeholder="Type here..."></textarea>
+                <input type="submit" value="post">
+            </form>
+            <% } %> 
+            <h3>Posts</h3>
+            
+            <ul>
+                <% for(let post of posts){ %> 
+                    <li><%= post.content %></li> 
+                    --<%= post.user.name %> 
+                    <br><br>
+                    <p>comments:</p>
+
+                    <ul>
+                        <% for(let comment of post.comments){ %>
+                        <li>
+                            <p>-<%= comment.content %> </p>
+                            <p>  --<%= comment.user.name %> </p>
+
+                        </li> 
+                        <% } %> 
+                    </ul>
+
+                    <% if(locals.user){ %> 
+                    <form action="comment/create" method="post">
+
+                        <textarea name="comment" cols="30" rows="3" placeholder="comment.."></textarea>
+                        <!-- take care of indentation below in value attribute..do not put extra space 
+                        otherwise value will include that indentation and if we try to search in
+                    database on the basis of that value the database will not recognize that value-->
+                        <input type="hidden" name="postid" value="<%=post._id%>">
+                        <input type="submit" value="post-comment">
+                        
+                    </form>
+                    <% } %> 
+                    <p>--------------------------------------------------------------------------</p>
+                <% } %> 
+            </ul>
+            
+
+        </div>
+        <div id="footer">
+
+            <div>
+                &copy Codial all rights reserved 2021
+            </div>
+            <% if(locals.user){ %>
+                <div><a href="/users/signout">Log out</a></div>
+            <% } %>
+        </div>
+
+
 </body>
 </html>
