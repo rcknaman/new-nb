@@ -13,12 +13,14 @@ const postSchema=new mongoose.Schema({
     comments:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Comment'
+    }],
+    likes:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Likes'
     }]
-
 },{
     timestamps:true
 });
-
 
 const post=mongoose.model('Post',postSchema);
 module.exports=post;

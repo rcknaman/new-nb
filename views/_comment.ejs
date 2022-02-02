@@ -1,0 +1,41 @@
+<li id="comment-<%= comment.id %>" class="comment">
+    <!-- either the author of the post or the author of the comment can delete the comment on the post -->
+    <% if(locals.user && (comment.user.id==locals.user.id || locals.user.id==post.user.id)){ %> 
+    <small>
+        <a href="comment/destroy/<%= comment.id %>" class="delete-comment">x</a>
+    </small>
+    <% } %> 
+    <div class="comment-content">
+        <p><h4><%= comment.user.name %></h4></p>
+        <p>-<%= comment.content %> </p>
+        <% if(locals.user){ %> 
+            <% let liked=false; %>
+            <form class="likes-container">
+
+                <% for(let like of comment.likes){ %>
+                    <% let s1= like.user._id%> 
+                    <% let s2=locals.user._id %> 
+                    <% if(s1.toString()==s2.toString()){ %>
+                        <% liked=true;break; %> 
+                    <% } %> 
+                <% } %> 
+
+                <% if(liked){ %>
+                    <button type="submit" style="background-color: green;">&#128077;</button> 
+                <% }else{ %>
+                    <button type="submit">&#128077;</button>
+                <% } %>
+
+                <input type="hidden" name="likeableId" value="<%= comment._id %>">
+                <input type="hidden" name="type" value="Comment">
+                <input type="hidden" name="likeNo" value="<%= comment.likes.length %>">
+                <% } %>
+                <p>Likes: <span id="comment-like-<%= comment.id %>"><%= comment.likes.length %></span> </p>
+            </form>
+            
+             
+            
+        
+    </div>
+    <!-- </div> -->
+</li> 

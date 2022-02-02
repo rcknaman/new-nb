@@ -1,0 +1,98 @@
+<div class="post" id="post-<%= post._id %>">
+    <p><%= post.user.name %> </p>
+    <div class="post-border">
+
+      <div class="post-content">
+          <p><%= post.content %> </p>
+        <!-- <img src="./photoicon.png" alt=""> -->
+      </div>
+    </div>
+    <div class="like-comment">
+      
+      <% let reactionMap={'like':'fa-thumbs-up','haha':'fa-grin-tears','namaste':'fa-praying-hands','sad':'fa-sad-cry','angry':'fa-angry'} %> 
+      <a class="like-btn" tabindex="-1" href="#" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top">
+        <div class="like-comment-div">
+          <% let liked=false %>
+          <% let reaction; %> 
+          <% for(let like of post.likes){ %>
+              <% let currUser=like.user._id;%>
+              <% let loginUser=locals.user._id; %>  
+            <% if(currUser.toString()==loginUser.toString()){ %> 
+              
+              <% liked=true; %>
+              <% reaction=like.reaction %> 
+              <% break; %> 
+            <% } %>
+          <% } %>  
+          <% if(liked){ %>
+          
+            <i class="fas <%= reactionMap[reaction] %>"></i>
+          <% }else{ %>
+            <i class="far fa-thumbs-up"></i><p>Like</p>
+          <% } %>
+        </div>
+      </a>
+        <!-- ------------------------------- -->
+      <div id="Post-reaction-popover" class="hidden">
+        <div class=" tracking-in-expand swing-top-fwd" id="like">
+
+          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=like"><i class="fas fa-thumbs-up"></i></a>
+        </div>
+        <div class=" tracking-in-expand" id="haha">
+
+          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=haha"><i class="fas fa-grin-tears"></i></a>
+        </div>
+        <div class=" tracking-in-expand" id="namaste">
+          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=namaste"><i class="fas fa-praying-hands"></i></a>
+        </div>
+        <div class=" tracking-in-expand" id="sad">
+          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=sad"><i class="fas fa-sad-cry"></i></a>                  
+        </div>
+        <div class=" tracking-in-expand" id="angry">
+          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=angry"><i class="fas fa-angry"></i></a>   
+        </div>
+        <div class=" tracking-in-expand" id="unlike">
+          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=unlike"><i class="fas fa-ban"></i></a>
+          
+        </div>
+     </div>
+     <!-- --------------------------------------- -->
+      <div class="like-comment-div user-select"  data-bs-toggle="modal" data-bs-target="#comments"><i class="far fa-comments"></i>Comment</div>
+
+      <div class="modal fade" id="comments" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+          <div class="modal-content modal-content-comment">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Comments</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="commment-img-container">
+
+                <!-- <img src="./photoicon.png" alt=""> -->
+                <p><%= post.content %> </p>
+                <div class="comment-logo"><i class="far fa-comments"></i></div>
+              </div>
+             
+              <div class="comment-list-container">
+
+                <ul class="comment-container" id="comment-list-<%= post._id %>">
+                  <% for(let comment of post.comments){ %> 
+                    <%- include('new_comment',{comment:comment}) %> 
+                  <% } %> 
+                </ul> 
+              </div>
+            </div>
+            <form class="modal-footer" id="comment-create-<%= post._id %>" method="post" action="/comment/create">
+              <div class="comment-input-div"><input name="comment" class="form-control" type="text" placeholder="Comment here.." aria-label="default input example"></div>
+              <input type="hidden" name="postid" value="<%= post._id %>">
+              <button type="submit" class="comment-send"><i class="fas fa-angle-double-right"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    

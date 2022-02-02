@@ -1,5 +1,6 @@
 const mongoose=require('mongoose');
-mongoose.connect('mongodb://localhost/codialdata');
+const env=require('./enviroment');
+mongoose.connect(`mongodb://localhost/${env.db_name}`);
 const db=mongoose.connection;
 
 db.on('error',console.error.bind(console,'error in connecting to db'));

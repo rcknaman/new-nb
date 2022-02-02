@@ -1,0 +1,93 @@
+<link rel="stylesheet" href="<%= assetPath('css/home.css') %>">
+<main id="main-content">
+
+  <div id="post-something">
+    <div id="post-input" class="btn" data-bs-toggle="modal" data-bs-target="#create-post">
+      <p>what's on your mind Buddy??</p>
+    </div>
+  </div>
+  <div class="posts-container">
+
+    <% for(let post of posts){ %>
+
+      <%- include('new_post',{post:post}) %>
+        <% } %>
+  </div>
+
+</main>
+<!-- Modal -->
+<div class="modal fade" id="create-post" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen-xxl-down modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="post-heading">Wanna post something?</h5>
+        <button type="button" class="btn-close btn" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form class="modal-body post-modal-body" action="/posts/create" method="post" id="new-post-form"
+        class="post-form">
+        <div id="form-section">
+
+          <div class="post-form">
+            <div class="mini-profile">
+              <div class="profile-pic"></div>
+              <div class="user-name">name</div>
+
+            </div>
+            <div id="post-input-modal">
+              <input name="content" type="text" class="form-control" aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-lg" placeholder="Post Here..">
+            </div>
+
+            <div id="choose-media-modal">
+              <button id="upload-video" class="upload-btn" type="button"><i class="fas fa-film"></i></button>
+              <button id="upload-photo" class="upload-btn" type="button"><i class="fas fa-image"></i></button>
+              <button id="upload-music" class="upload-btn" type="button"><i class="fas fa-music"></i></button>
+
+            </div>
+            <button type="submit" class="btn red-btn" id="post-btn" data-bs-dismiss="modal">Post</button>
+          </div>
+
+        </div>
+        <div id="preview-section">
+          <div id="preview-section-heading" class="one-edge-shadow">
+            <p>Preview</p>
+          </div>
+          <div id="preview-body">
+
+            <div id="preview-body-content">
+              <div id="preview-body-content-grid">
+                <div data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop" class="preview-content"></div>
+                <div class="preview-content"></div>
+                <div class="preview-content"></div>
+                <div class="preview-content"></div>
+                <div class="preview-content"></div>
+                <div class="preview-content"></div>
+                <div class="preview-content"></div>
+                <div class="preview-content"></div>
+                <div class="preview-content"></div>
+                <div class="preview-content"></div>
+
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel">
+          <div class="offcanvas-header">
+            <h5 id="offcanvasTopLabel">Offcanvas top</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+
+          </div>
+        </div>
+      </form>
+      <div class="modal-footer">
+        <button type="button" class="btn red-btn" data-bs-dismiss="modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="<%= assetPath("front_java/home.js") %>"></script>

@@ -18,8 +18,12 @@ const comment_schema=new mongoose.Schema({
     //one comment can only belong to one post 
     post:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Posts'
-    }
+        ref:'Post'
+    },
+    likes:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Likes'
+    }]
     
 },{
     timestamps:true

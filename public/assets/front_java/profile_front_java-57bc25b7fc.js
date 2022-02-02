@@ -1,0 +1,1 @@
+{let e=function(){let t=$("#friend-btn");$(t).click(function(e){e.preventDefault(),$.ajax({type:"post",url:"/users/friends/toggle/"+$(t).prop("value"),success:function(e){e.data.deleted?$(t).html("Add Friend"):$(t).html("Remove")}})})};e()}

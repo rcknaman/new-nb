@@ -1,0 +1,38 @@
+<li id="comment-<%= comment._id %>" class="comment">
+    <div class="self-msg">
+      <div class="username"><p><%= comment.user.name %> </p></div>
+      <div class="msg-content"><p><%= comment.content %> </p></div>
+      
+    </div>
+    <div class="comment-like">
+      <a class="like-btn" tabindex="-1" href="#" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top">
+        <p>like.</p>
+        <span><%= comment.likes.length %> </span>
+      </a>
+    </div>
+
+    <div id="Comment-reaction-popover" class="hidden">
+      <div class=" tracking-in-expand swing-top-fwd" id="like">
+
+        <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Comment&reaction=like"><i class="fas fa-thumbs-up"></i></a>
+      </div>
+      <div class=" tracking-in-expand" id="haha">
+
+        <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Comment&reaction=haha"><i class="fas fa-grin-tears"></i></a>
+      </div>
+      <div class=" tracking-in-expand" id="namaste">
+        <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Comment&reaction=namaste"><i class="fas fa-praying-hands"></i></a>
+      </div>
+      <div class=" tracking-in-expand" id="sad">
+        <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Comment&reaction=sad"><i class="fas fa-sad-cry"></i></a>                  
+      </div>
+      <div class=" tracking-in-expand" id="angry">
+        <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Comment&reaction=angry"><i class="fas fa-angry"></i></a>   
+      </div>
+      <div class=" tracking-in-expand" id="unlike">
+        <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Comment&reaction=unlike"><i class="fas fa-ban"></i></a>
+        
+      </div>
+   </div>
+  </li>
+

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
     <title><%=title%></title>
 </head>
 <body>
@@ -15,7 +17,24 @@
         <input type="password" name="password" required placeholder="password">
         <input type="submit" value="submit">
     </form>
+    <a href="/users/auth/google">signin with google</a>
+    <p><a href="/users/forgot-password/enter-mail">Forgot Password</a></p>
+    <!-- //for the flash notifcations -->
+    <script>
+
+        <% if(flash.error && flash.error.length>0){ %>
+
+        new Noty({
+
+                theme: 'relax',
+                text: "<%= flash.error%>",
+                type: 'error',
+                layout:'topRight',
+                timeout:1500
 
 
+            }).show();
+        <% } %>
+    </script>
 </body>
 </html>

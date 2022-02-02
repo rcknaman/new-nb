@@ -7,23 +7,28 @@ const database=require('../models/user');
 //for authenticating the user when he tries to sign in
 passport.use(new LocalStrategy({
         //telling passport that to select 'email' as a name field
-        usernameField: 'email'
+        usernameField: 'email',
+        // passReqToCallback allow us to include an 'req' parameter to the below callback function
+        passReqToCallback:true
     },
-    function(email,password,done){
+    function(req,email,password,done){
         //here the 1st argment 'email' is from database and 2nd one is the 'email' from the user
         ///who is requesting to sign in
         database.findOne({email:email},function(err,user){
 
             if(err){
-                console.log(`error in finding user -->authentication passport ${err}`);
+                
+                req.flash('error',err);
                 //since we are using javascript so the functions could contain less no. of parameters 
                 //compared to their capacity 
                 //so in this case 1st parameter is pertaining to error
                 //so error==err
                 return done(err);
             }
+            
             if(!user || user.password!=password){
-                console.log('Invalid username or password');
+                
+                req.flash('error','invalid username or password!');
                 //done is an object which can contain two arguments 1st one being corresponding to error 
                 //and 2nd one pertaining to authentication
                 //here error==null
@@ -33,6 +38,8 @@ passport.use(new LocalStrategy({
             //here user object acts like a boolean value
             //so,error==null
             //authentication==user(true)
+            //this 'user' is from database given that the user is present in the database according
+            //to the given email and password
             return done(null,user);
         });
     }
@@ -50,7 +57,6 @@ passport.serializeUser(function(user,done){
 passport.deserializeUser(function(id,done){
     database.findById(id,function(err,user){
         if(err){
-            console.log('error in finding user-->passport deserialising');
             return done(err);
         }
         return done(null,user);
