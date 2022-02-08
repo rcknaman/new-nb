@@ -16,9 +16,9 @@
           content: function () {
   
             if(likeabletype=='post'){
-              return $("#Post-reaction-popover").html();
+              return $(`#Post-reaction-popover-${likeableId}`).html();
             }else{
-              return $("#Comment-reaction-popover").html();
+              return $(`#Comment-reaction-popover-${likeableId}`).html();
             }
           }
       });
@@ -68,7 +68,6 @@
     let newPostForm=$('#new-post-form');
     newPostForm.submit(function(e){
 
-        console.log(e);
         e.preventDefault();
         $.ajax({
             type: 'post',
@@ -122,7 +121,7 @@
   let reactiontabs=function(likeabletype,likeable){
 
       let str=`
-      <div id="${likeabletype}-reaction-popover" class="hidden">
+      <div id="${likeabletype}-reaction-popover-${likeable._id}" class="hidden">
         <div class=" tracking-in-expand swing-top-fwd" id="like">
 
           <a href="/likes/toggle/?likeableId=${likeable._id}&type=${likeabletype}&reaction=like"><i class="fas fa-thumbs-up"></i></a>
@@ -154,14 +153,29 @@
     let newPostDom=function(post,username){
         return $(`
         <div class="post" id="post-${post._id}"> 
-        <p>${username}</p>
-        <div class="post-border">
-    
-          <div class="post-content">
-              <p>${ post.content }</p>
-            <!-- <img src="./photoicon.png" alt=""> -->
+
+          <div class="post-header-container">
+            <div class="post-header">
+              <div class="post-user">
+
+                <div class="post-user-pic"></div>
+                <p class="post-user-name">User</p>
+              </div>
+              <div class="post-options">
+                <i class="fas fa-ellipsis-h"></i>
+              </div>
+
+            </div>
+            <p class="post-date-time">
+              <span class="date">Now <span style="color:green;">&#9679;</span></span>
+            </p>
+            <div class="user-text">${post.content}</div>
           </div>
-        </div>
+
+          <div class="post-content">
+            <img src="./photoicon.png" alt="">
+          </div>
+        
         <div class="like-comment">
           
     
@@ -273,21 +287,6 @@
           });
         });
     }
-    let fileUploader=function(){
-
-      $('#upload-photo').on('click',function(){
-
-        let previewGrid=`<div class="preview-content"><input type="file"></div>`;
-
-        $('#preview-body-content-grid').append(previewGrid);
-        let newPreview=$('.preview-content').last();
-        $(' input',newPreview).click();
-
-      });
-    }
-    fileUploader();
-
-
 
 
     let postList=$('.post');
@@ -295,7 +294,6 @@
     for(let post of postList){
 
       let likeableId=$(post).prop('id').slice(5);
-
       commentCreate(likeableId);
       likeHandler(likeableId,'post');
       popoverfunc(likeableId,'post');
@@ -308,7 +306,84 @@
       likeReact('comment');
     }
 
-    createPost();
+    // createPost();
+// ------------------------------------------------------------------------------------
+
+// cannot use ajax for posting data and files together!!!
+
+    let fileUploader=function(){
+      let button=$('.upload-btn');
+      $(button).on('click',function(e){
+
+        let previewContainer=$('#preview-body-content-grid');
+        let previewCount=$('>div',previewContainer).length+1;
+        let type;
+        let buttonId=$(this).prop('id');
+        console.log(buttonId);
+        if(buttonId=='upload-video'){
+          type="video/*";
+        }else if(buttonId=='upload-photo'){
+          type="image/*";
+        }else if(buttonId=='upload-audio'){
+          type="audio/*";
+        }else{
+          return;
+        }
+
+        let inputFileDom=`<div class="preview-content"><input type="file" name="file${previewCount}" accept=${type}><img src="" alt="photo"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"></div>`
+
+        $(previewContainer).append(inputFileDom);
+        let newPreview=$(`input[name=file${previewCount}]`);
+        $(newPreview).click();
+      }); 
+    }
+    fileUploader();
+
+    let fileCountSender=function(){
+
+
+      let uploadLink=$('#upload-prep');
+      $(uploadLink).on('click',function(e){
+        e.preventDefault();
+        $.ajax({
+          type:'get',
+          url:$(uploadLink).prop('href'),
+          success:function(){
+            $("#new-post-form").submit();
+          },
+          error:function(error){
+            console.log(error);
+          }
+        });
+      });
+    }
+    let postInitialize=function(){
+      $('#post-btn').click(function(e){
+        e.preventDefault();
+        beforeupload();
+      });
+    }
+    let beforeupload=function(){
+
+        let fileArray=$('#preview-body-content-grid>div>input');
+        let uploadLink=$('#upload-prep');
+
+        if(fileArray.length){
+          let str=$(uploadLink).prop('href');
+          $(uploadLink).prop('href',str+fileArray.length.toString());
+          fileCountSender();
+          $(uploadLink).click();
+        }else{
+          finalPost();
+          $("#new-post-form").submit();
+        }
+
+
+    }
+
+    postInitialize();
+
+
 
 }
 

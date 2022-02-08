@@ -1,36 +1,79 @@
 const Post=require('../models/post');
 const Comments=require('../models/comments_model');
 const Likes=require('../models/likes_model');
-console.log('hello!');
+const multerFields=require('../models/post').fileStorage;
+let post_cache=require('../post_cache/post_cache');
+
 module.exports.posts=async function(req,res){
 
-        //put res.redirect('back) inside callback function otherwise the req.flash don't work and some other
-        //wierd things will happen
+    //     //put res.redirect('back) inside callback function otherwise the req.flash don't work and some other
+    //     //wierd things will happen
+    // try{
+    //     //here we have to use async await syntax if we want to put data of Post.create into some variable..
+    //     //we can't do assign its value if we will be using nested functions 
+    //     let post= await Post.create({
+    //         content:req.body.content,
+    //         user:req.user._id
+    //     });
+    //     if(req.xhr){
+    //         return res.status(200).json({
+    //             data: {
+    //                 post:post,
+    //                 flash: "post created successfully",
+    //                 username: req.user.name
+    //             },
+    //             message: "post created"
+    //         });
+            
+    //     }
+    //     // req.flash('success','post created successfully');
+    //     return res.redirect('back');
+
+
     try{
-        //here we have to use async await syntax if we want to put data of Post.create into some variable..
-        //we can't do assign its value if we will be using nested functions 
+
         let post= await Post.create({
-            content:req.body.content,
             user:req.user._id
         });
-        if(req.xhr){
-            return res.status(200).json({
-                data: {
-                    post:post,
-                    flash: "post created successfully",
-                    username: req.user.name
-                },
-                message: "post created"
-            });
+        post_cache.storageFields(req,res,function(){
+
+
+
+
+            if(req.files){
+                post.content=req.body.content;
+                for(let [key,value] of Object.entries(req.files)){
+                    let mimetype=value[0].mimetype;
+                    let type=mimetype.substring(0,5);
+                    post[type].push(value[0].destination);
+                    // console.log('value.destination: ',value[0].destination);
+                    console.log('post[type]2: ',post['image']);
+                    console.log('type: ',type);
+                    console.log(value);
+                }
+                post.save();
+
+            }
+            if(req.xhr){
+                return res.status(200).json({
+                    data: {
+                        // post:post,
+                        username: req.user.name
+                    },
+                    message: "post created"
+                });
             
-        }
-        // req.flash('success','post created successfully');
-        return res.redirect('back');
+            }
+
+
+        });
+        
+
+
 
 
     }catch(err){
         console.log('post: ');
-        req.flash('error','error in creating post');
         return res.redirect('back');
     }
 }
@@ -79,8 +122,26 @@ module.exports.destroy=async function(req,res){
             message:'Internal Server Error!'
         });
     }
-
-
-
 }
 
+module.exports.beforeUpload=function(req,res){
+    
+    let storage=Post.fileStorage;
+    console.log('req.params: ',req.params);
+    let multipleUpload=new Array();
+
+    for(let i=1;i<=parseInt(req.params.filequantity);i++){
+        let fieldnameElement={
+            name:`file${i}`,
+            maxcount:1
+        }
+        multipleUpload.push(fieldnameElement);
+    }
+    console.log('lol: ',multipleUpload);
+    let storageFields=storage.fields(multipleUpload);
+    post_cache.storageFields=storageFields;
+    return res.json(200,{
+
+        message:'success'
+    });
+}

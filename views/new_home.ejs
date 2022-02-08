@@ -24,7 +24,7 @@
         <button type="button" class="btn-close btn" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form class="modal-body post-modal-body" action="/posts/create" method="post" id="new-post-form"
-        class="post-form">
+        class="post-form" enctype="multipart/form-data">
         <div id="form-section">
 
           <div class="post-form">
@@ -41,10 +41,11 @@
             <div id="choose-media-modal">
               <button id="upload-video" class="upload-btn" type="button"><i class="fas fa-film"></i></button>
               <button id="upload-photo" class="upload-btn" type="button"><i class="fas fa-image"></i></button>
-              <button id="upload-music" class="upload-btn" type="button"><i class="fas fa-music"></i></button>
+              <button id="upload-audio" class="upload-btn" type="button"><i class="fas fa-music"></i></button>
 
             </div>
-            <button type="submit" class="btn red-btn" id="post-btn" data-bs-dismiss="modal">Post</button>
+            <a href="/posts/upload/" id="upload-prep"></a>
+            <button type="button" class="btn red-btn" id="post-btn" data-bs-dismiss="modal">Post</button>
           </div>
 
         </div>
@@ -56,7 +57,9 @@
 
             <div id="preview-body-content">
               <div id="preview-body-content-grid">
-                <div data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop" class="preview-content"></div>
+
+
+                      <!-- <div data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop" class="preview-content"></div>
                 <div class="preview-content"></div>
                 <div class="preview-content"></div>
                 <div class="preview-content"></div>
@@ -65,7 +68,7 @@
                 <div class="preview-content"></div>
                 <div class="preview-content"></div>
                 <div class="preview-content"></div>
-                <div class="preview-content"></div>
+                <div class="preview-content"></div> -->
 
 
               </div>

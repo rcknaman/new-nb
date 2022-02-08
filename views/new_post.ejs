@@ -1,12 +1,32 @@
 <div class="post" id="post-<%= post._id %>">
-    <p><%= post.user.name %> </p>
-    <div class="post-border">
+   
+  <div class="post-header-container">
+    <div class="post-header">
+      <div class="post-user">
+
+        <div class="post-user-pic"></div>
+        <p class="post-user-name"><%= post.user.name %> </p>
+      </div>
+      <div class="post-options">
+        <i class="fas fa-ellipsis-h"></i>
+      </div>
+
+    </div>
+    <p class="post-date-time">
+      <!-- <span class="date">1.july.2022</span>-<span class="time">5pm</span> -->
+      <span class="date">
+        
+        <% let date=post.createdAt.toString() %> 
+        <%= date.slice(0,15); %> 
+      </span>
+    </p>
+    <div class="user-text"><%= post.content %> </div>
+  </div>
 
       <div class="post-content">
-          <p><%= post.content %> </p>
-        <!-- <img src="./photoicon.png" alt=""> -->
+        <img src="./photoicon.png" alt="">
       </div>
-    </div>
+    <!-- </div> -->
     <div class="like-comment">
       
       <% let reactionMap={'like':'fa-thumbs-up','haha':'fa-grin-tears','namaste':'fa-praying-hands','sad':'fa-sad-cry','angry':'fa-angry'} %> 
@@ -33,7 +53,7 @@
         </div>
       </a>
         <!-- ------------------------------- -->
-      <div id="Post-reaction-popover" class="hidden">
+      <div id="Post-reaction-popover-<%= post._id %>" class="hidden">
         <div class=" tracking-in-expand swing-top-fwd" id="like">
 
           <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=like"><i class="fas fa-thumbs-up"></i></a>
