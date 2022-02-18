@@ -2,7 +2,7 @@ const Post=require('../models/post');
 const Comments=require('../models/comments_model');
 const Likes=require('../models/likes_model');
 const multerFields=require('../models/post').fileStorage;
-let post_cache=require('../post_cache/post_cache');
+let post_cache=require('../variableContainer/variableContainer');
 
 module.exports.posts=async function(req,res){
 
@@ -45,7 +45,16 @@ module.exports.posts=async function(req,res){
                 for(let [key,value] of Object.entries(req.files)){
                     let mimetype=value[0].mimetype;
                     let type=mimetype.substring(0,5);
-                    post[type].push(value[0].destination);
+
+                    if(type=='image'){
+                        post[type].push(Post.photoPath+'/'+value[0].filename);
+                    }else if(type=='video'){
+                        post[type].push(Post.videoPath+'/'+value[0].filename);
+                    }else if(type=='audio'){
+                        post[type].push(Post.audioPath+'/'+value[0].filename);
+                    }
+
+                    // post[type].push(value[0].path);
                     // console.log('value.destination: ',value[0].destination);
                     console.log('post[type]2: ',post['image']);
                     console.log('type: ',type);
@@ -54,21 +63,11 @@ module.exports.posts=async function(req,res){
                 post.save();
 
             }
-            if(req.xhr){
-                return res.status(200).json({
-                    data: {
-                        // post:post,
-                        username: req.user.name
-                    },
-                    message: "post created"
-                });
             
-            }
-
 
         });
         
-
+        return res.redirect('back');
 
 
 

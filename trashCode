@@ -1,0 +1,288 @@
+let postModalContent=function(post){
+
+  let videoCount=post.video.length;
+  let photoCount=post.image.length;
+  let audioCount=post.audio.length;
+
+  let content=``;
+  content+=`<div class="comment-post-container">`;
+
+  if(photoCount+videoCount+audioCount!=0){
+
+    content+=
+    `<div id="postComment${post._id}-card" class="carousel comment-carousal slide" data-bs-interval="false">
+    <div class="carousel-inner">`
+
+      let flag=1;
+      let photoDom=``;
+      for(let photo of post.image){
+        
+        if(flag==1){
+          photoDom+=`<div class="carousel-item active">`
+            flag=0;
+        }else{
+          photoDom+=`<div class="carousel-item">`
+        }
+        photoDom+=
+        `<div class="carousel-item-border">
+          <img src=${photo} alt="">
+        </div>
+        
+      </div>`
+      }
+      let videoDom=``;
+      for(let video of post.video){
+
+
+        if(flag==1){
+
+          videoDom+=`<div class="carousel-item active">`
+              flag=0;
+        }else{
+          videoDom+=`<div class="carousel-item">`
+        }
+        videoDom+=
+              `<div class="carousel-item-border">
+                <video controls>
+                  <source src=${video}>
+                </video>
+              </div>
+          
+            </div>`
+      }
+
+
+      let audioDom=``;
+      for(let audio of post.audio){
+        
+        if(flag==1){
+          audioDom+=`<div class="carousel-item music-post active">`
+            flag=0;
+        }else{
+          audioDom+=`<div class="carousel-item music-post">`  
+        }
+        audioDom+=
+        `<div class="music-carousel-cover">
+          <div class="carousel-item-border music-carousel">
+            <div class="concentric-circles post-music">
+              <i class="fas fa-headphones-alt"></i>
+            </div>
+          </div>
+        </div>
+
+        <audio controls>
+          <source src=${audio}>
+        </audio>
+      </div>`
+    }
+   
+    content+=(audioDom+videoDom+photoDom);
+
+    content+=
+  `</div>
+  <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#postComment<%= post._id %>-card" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#postComment<%= post._id %>-card" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>`
+
+
+
+  }
+  return content;
+
+}
+
+
+let newPostDom=function(post,username){
+    return $(`
+    <div class="post" id="post-${post._id}"> 
+
+      <div class="post-header-container">
+        <div class="post-header">
+          <div class="post-user">
+
+            <div class="post-user-pic"></div>
+            <p class="post-user-name">User</p>
+          </div>
+          <div class="post-options">
+            <i class="fas fa-ellipsis-h"></i>
+          </div>
+
+        </div>
+        <p class="post-date-time">
+          <span class="date">Now <span style="color:green;">&#9679;</span></span>
+        </p>
+        <div class="user-text">${post.content}</div>
+      </div>`+
+      postContent(post)
+    +
+    `<div class="like-comment">
+      
+
+      <a class="like-btn" tabindex="-1" href="#" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top">
+        <div class="like-comment-div"><i class="far fa-thumbs-up"></i><p>Like</p></div>
+      </a>
+        <!-- ------------------------------- -->
+      `
+      +reactiontabs('Post',post)+
+      `
+     <!-- --------------------------------------- -->
+      <div class="like-comment-div user-select"  data-bs-toggle="modal" data-bs-target="#comments-${post._id}"><i class="far fa-comments"></i>Comment</div>
+
+      <div class="modal fade" id="comments-${post._id}" tabindex="-1" aria-labelledby="${post._id}ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+          <div class="modal-content modal-content-comment">
+            <div class="modal-header">
+              <h5 class="modal-title" id="${post._id}ModalLabel">Comments</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">`
+            +postModalContent(post)+
+            `</div>
+            <form class="modal-footer" id="comment-create-${post._id}" method="post" action="/comment/create">
+              <div class="comment-input-div"><input name="comment" class="form-control" type="text" placeholder="Comment here.." aria-label="default input example"></div>
+              <input type="hidden" name="postid" value="${post._id}">
+              <button type="submit" class="comment-send"><i class="fas fa-angle-double-right"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+      // -----
+    </div>
+  </div>
+    
+    
+    `)
+}
+
+
+    
+let postContent=function(post){
+
+  let videoCount=post.video.length;
+  let photoCount=post.image.length;
+  let audioCount=post.audio.length;
+  let content=``;
+  if(videoCount+photoCount+audioCount!=0){
+
+
+    content+=`<div class="post-content">
+    <div id="post${ post._id }-card" class="carousel slide post-items" data-bs-interval="false">
+      <div class="carousel-inner">`;
+
+      let flag=1;
+
+      let photoDom=``;
+      for(let photo of post.image){
+        
+        if(flag==1){
+          photoDom+=`<div class="carousel-item active">`
+              flag=0;
+        }else{
+          photoDom+=`<div class="carousel-item">`
+        } 
+
+
+        photoDom+=`<div class="carousel-item-border">
+            <img src="${photo}"  alt="">
+          </div>
+          </div>`
+        }
+
+        let videoDom=``;
+        for(let video of post.video){
+          
+          if(flag==1){ 
+            videoDom+=`<div class="carousel-item active">`
+              flag=0;
+          }else{
+            videoDom+=`<div class="carousel-item">`
+          }
+          videoDom+=`<div class="carousel-item-border">
+              <video controls>
+                <source src=${video}>
+              </video>
+            </div>
+            </div>`      
+    }
+
+    let audioDom=``;
+        for(let audio of post.audio){
+
+          if(flag==1){
+            audioDom+=`<div class="carousel-item music-post active">`
+            
+            flag=0;
+          }else{
+            audioDom+=`<div class="carousel-item music-post">`
+          }
+          audioDom+=`<div class="music-carousel-cover">
+                <div class="carousel-item-border music-carousel">
+                  <div class="concentric-circles post-music">
+                    <i class="fas fa-headphones-alt"></i>
+                  </div>
+                </div>
+              </div>
+    
+              <audio controls>
+                <source src=${audio}>
+              </audio>
+    
+            </div>`
+        }
+
+        content+=audioDom+photoDom+videoDom;
+
+        content+=
+                  `</div>    
+              </div>;
+
+    <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#post${ post._id }-card" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#post${post._id}-card" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+
+
+
+  </div>`
+
+  }
+  return content;
+
+
+
+}
+
+let createPost=function(){
+
+  let newPostForm=$('#new-post-form');
+  newPostForm.submit(function(e){
+
+      e.preventDefault();
+      $.ajax({
+          type: 'post',
+          url: '/posts/create',
+          data: newPostForm.serialize(),
+          success: function(data){
+              let newPost=new newPostDom(data.data.post,data.data.username);
+              $('.posts-container').prepend(newPost);
+
+              commentCreate(data.data.post._id);
+              likeHandler(data.data.post._id,'post');
+              popoverfunc(data.data.post._id,'post');
+              likeReact('post');
+          },
+          error: function(error){
+              console.log(error.responseText);
+          } 
+      });
+  });
+      
+}

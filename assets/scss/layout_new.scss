@@ -27,7 +27,7 @@ header {
     position: fixed;
     top: 0%;
     margin-bottom: 5px;
-    
+    z-index: 3;
 }
 
 #logo-container {
@@ -36,6 +36,148 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.dropdown button{
+    // background-color: #B92B27 !important;
+    padding: 0;
+    font-size: 2rem !important;
+    border: none !important;
+    border-radius: 50% !important;
+    height: 2.5rem !important;
+    width: 2.5rem !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    // 
+}
+.header-btn button{
+    background-color: #B92B27 !important;
+}
+.header-btn{
+    position: relative;
+}
+.header-btn>button:hover{
+    background-color: #942925 !important;
+}
+.request-drpdwn,.other-notifs{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    border-bottom: 1px solid #B92B27;
+}
+.request-drpdwn:hover{
+    background-color: #fff;
+}
+.request-drpdwn.dropdown-item{
+    padding: 0;
+    
+}
+.request-drpdwn button{
+    background-color: #fff !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+// .request-drpdwn>div:hover{
+//     background-color: #9d9d9e;
+// }
+.req-detail{
+    width: 80%;
+    height: 43px;
+    display: flex;
+    
+    align-items: center;
+    overflow: hidden;
+    // flex-shrink: 1;
+    position: relative;
+    z-index: 1;
+    
+    transition: all .2s ease-in-out;
+}
+.request-drpdwn .req-detail{
+    cursor: pointer;
+}
+.req-detail:hover{
+    background-color: #D9D9DB;
+}
+.req-decision{
+    width: 20%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 3;
+    
+}
+.req-detail p{
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    justify-self: center;
+    // flex-shrink: 1;
+    // height: 100%;
+}
+.req-detail img{
+    // position: absolute;
+    // left: 0%;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+.req-decision{
+    font-size: 1rem !important;
+    width: 100px;
+    border-left: 1px solid #B92B27;
+    box-shadow: -5px 0 10px 0px #909092;
+}
+.req-decision i{
+    border-radius: 50%;
+    transition: all .2s ease-in-out;
+    color: #B92B27 !important;
+}
+.req-decision i:hover{
+    background-color: #D9D9DB;
+}
+.other-notifs .req-decision{
+    cursor: pointer;
+    width: 50px;
+}
+.other-notifs .req-detail{
+    // max-width: 100px;
+    white-space: break-spaces;
+    // pointer-events: none;
+}
+.other-notifs .req-detail:focus{
+    background-color: #fff !important;
+}
+.other-notifs .req-decision:hover{
+    background-color: #D9D9DB !important;
+}
+.notification-badge{
+    background-color: #0A58CA !important;
+    top: 2px !important;
+}
+.header-btn ul{
+    z-index: 3 !important;
+    top: 0px !important;
+    z-index: 3;
+    width: 300px;
+}
+.header-btn li{
+    // position: fixed !important;
+    z-index: 3 !important;
+    height: 50px;
+
+}
+.dropdown-item:active {
+    background-color: white;
+    color: black;
+    }
+.header-btn ul:hover{
+    background-color: #fff;
 }
 
 #logo-container a {
@@ -64,6 +206,8 @@ header {
     align-items: center;
     font-size: 2rem;
     color: white;
+    position: relative;
+    z-index: 3;
 }
 #mini-options{
     display: none;
@@ -353,4 +497,11 @@ header {
 }
 #send-msg button:hover{
     background-color: #D9D9DB;
+}
+.minimize-chat-container{
+    
+    height: 30px !important;
+}
+.minimize-chat-body{
+    display: none;
 }

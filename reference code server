@@ -1,0 +1,61 @@
+// if from front end side a request comes in to join a chat room with some name(say: codial) then these lines 
+        // of code will habdle the situation
+        socket.on('join_room',function(data){
+            // while requesting from frontend we have sended some data which is present in the function's argument
+            console.log('joining request recieved',data);
+            socket.join(data.chatroom);
+            // emitting an event namely 'user_joined' to tell everybody in the room that a new user has joined
+            io.in(data.chatroom).emit('user_joined',data);
+        });
+
+        socket.on('send_message',function(data){
+            console.log('message request recieved',data);
+            
+            
+            Message.create({
+                message:data.message,
+                sentBy:data.userId,
+                chatroom:null
+            },function(err,message){
+                if(err){
+                    console.log('message error: ',err);
+                }
+                Chatroom.findOneAndUpdate({name:data.chatroomName},{$push:{messageId:message._id}},function(err,chatroom){
+                    if(err){
+                        console.log('chatroom error: ',err);
+                    }
+                    console.log('chatroom: ',chatroom);
+                    if(!chatroom){
+                        // callback hell..we could do it better by using async await
+                        Chatroom.create({name:data.chatroomName},function(err,chatRoom){
+                            console.log(chatRoom);
+                            Chatroom.findByIdAndUpdate(chatRoom._id,{$push:{messageId:message._id}},function(err,chatRoom){
+                                User.findByIdAndUpdate(data.userId,{$push:{chatroom:chatRoom._id}},function(err,user){
+                                    Message.findByIdAndUpdate(message._id,{chatroom:chatRoom._id},function(err,message){
+                                        if(err){
+                                            console.log(err);
+                                        }
+                                    });
+                                });
+                                
+                            });
+                        });
+                    }else{
+                        console.log('data.userId: ',data.userId);
+                        User.findById(data.userId,function(err,user){
+                            console.log('user from else side: ',user);
+                            console.log('user.chatroom: ',user.chatroom);
+                            if(!user.chatroom.includes(chatroom._id)){
+                                // it won't work without callback function
+                                User.findByIdAndUpdate(user._id,{$push:{chatroom:chatroom._id}},function(err,user){});  
+                            }
+                             // it won't work without callback function
+                            Message.findByIdAndUpdate(message._id,{chatroom:chatroom},function(err,msg){});
+                        });
+                        
+                    }
+                    
+                });
+                io.in(data.chatroomName).emit('new_message',data);
+            });
+        });

@@ -34,6 +34,18 @@ const userSchema=new mongoose.Schema({
     chatroom:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Chatroom'
+    }],
+    friendRequests:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'userschema'
+    }],
+    sendedRequest:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'userschema'
+    }],
+    reqAcceptedNotif:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'userschema'
     }]
 
 },{
@@ -51,7 +63,7 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       //file.fieldname is the key name of file whose value is file itself
-      cb(null, file.fieldname + '-' + uniqueSuffix);
+      cb(null, file.fieldname + '-' + uniqueSuffix+path.extname(file.originalname));
       console.log(file.fieldname);
     }
 });

@@ -97,7 +97,6 @@ app.use(cookieParser());
 app.set('view engine','ejs');
 app.set('views','./views');
 
-
 //here we are telling that which key to use to encrypt our cookie before sending it to client's browser
 
 app.use(session({

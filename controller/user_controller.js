@@ -9,7 +9,7 @@ const UpdatePasswordTokenMailer=require('../mailer/update_password_link');
 const accessTokenModel=require('../models/accessToken_modal');
 module.exports.profile=async function(req,res){
 
-
+    
     let friendship=await Friends.findOne({requestBy:{$in:[req.params.id,req.user.id]},requestTo:{$in:[req.params.id,req.user.id]}});
 
     let user = await database.findById(req.params.id);
@@ -21,6 +21,43 @@ module.exports.profile=async function(req,res){
 
 
 }
+module.exports.sessionCheck=function(req,res){
+    if(req.user){
+        return res.json(200,{
+            data:{
+                allowed:'yes'
+            }
+        });
+    }else{
+        return res.json(200,{
+            data:{
+                allowed:'no'
+            }
+        });
+    }
+}
+module.exports.fetchNotifs=async function(req,res){
+
+    let user=req.user.populate({
+        path:'friendRequests',
+        select:'name _id'
+    });
+    return res.json(200,{
+
+        data:{
+            user:user
+        }
+    })
+
+}
+module.exports.deleteNotifs=async function(req,res){
+
+    await database.updateOne({'_id':req.user.id},{$pull:{reqAcceptedNotif:req.params.id}});
+    return res.json(200,{
+        message:'success'
+    });
+
+}
 module.exports.signin=function(req,res){
     //if the user is already signed in on his system then he must get redirected to his profile page 
     //in place of signin page
@@ -29,9 +66,9 @@ module.exports.signin=function(req,res){
     }
 
 
-    return res.render('usersignin',{
+    return res.render('new_signin',{
         title:'codial|signin',
-        
+        layout:'new_signin'
     });
 }
 
@@ -43,36 +80,47 @@ module.exports.signup=function(req,res){
     }
 
 
-    return res.render('usersignup',{
-        title: 'codial|signup'
+    return res.render('new_signup',{
+        title: 'codial|signup',
+        layout:'new_signup'
     })
 }
-module.exports.create=function(req,res){
-    database.findOne({'email': req.body.email}, function(err,user){
-        if(err){
-            console.log('error in finding the user in signing up');
-            console.log('error h bc');
-            return res.redirect('back');
-        }
-        console.log(!user);
-        if(!user){
-            //here req.body is the data which we are saving and only that data is saved which is 
-            //present in schema i.e. confirm password will not be stored in our database in our case
-            database.create(req.body,function(err,user){
-                if(err){
-                    console.log('error in signing -up');
-                }
-                return res.redirect('/users/signin');
-            })
-            console.log('no user');
-        }else{
-            console.log('wtf');
-            return res.redirect('back');
-        }
+module.exports.create= function(req,res){
 
-    })
+    database.uploadedAvatar(req,res,function(err){
+
+        database.findOne({'email': req.body.email}, function(err,user){
+            if(err){
+                console.log('error in finding the user in signing up');
+                console.log('error h bc');
+                return res.redirect('back');
+            }
+            console.log(!user);
+            if(!user){
+                //here req.body is the data which we are saving and only that data is saved which is 
+                //present in schema i.e. confirm password will not be stored in our database in our case
+                database.create(req.body,function(err,user){
+                    if(err){
+                        console.log('error in signing -up');
+                    }
+                    else{
+                        if(req.file){
+                            user.avatar=database.avatarPath + '/' + req.file.filename;
+                        }
+                        user.save();
+                        return res.redirect('/users/signin');
+                    }
+
+                });
+            }else{
+                console.log('wtf');
+                return res.redirect('back');
+            }
+    
+        })
 
 
+    });
 
 }
 module.exports.createSession=function(req,res){

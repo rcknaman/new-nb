@@ -13,7 +13,6 @@
 
     </div>
     <p class="post-date-time">
-      <!-- <span class="date">1.july.2022</span>-<span class="time">5pm</span> -->
       <span class="date">
         
         <% let date=post.createdAt.toString() %> 
@@ -22,11 +21,87 @@
     </p>
     <div class="user-text"><%= post.content %> </div>
   </div>
-
+  <% let photoCount= post.image.length%> 
+  <% let videoCount= post.video.length%> 
+  <% let audioCount= post.audio.length%> 
+  <% if(photoCount+videoCount+audioCount!=0){ %>
       <div class="post-content">
-        <img src="./photoicon.png" alt="">
+        <div id="post<%= post._id %>-card" class="carousel slide post-items" data-bs-interval="false">
+          <div class="carousel-inner">
+            <% let flag=1; %> 
+          <% for(let photo of post.image){ %> 
+            
+            <% if(flag==1){ %> 
+                <div class="carousel-item active">
+                  <% flag=0; %> 
+            <% }else{ %>
+              <div class="carousel-item">
+                <% } %> 
+
+
+              <div class="carousel-item-border">
+                <img src="<%= photo %>"  alt="">
+              </div>
+              
+            </div>
+
+            <% } %> 
+
+            <% for(let video of post.video){ %>
+              
+              <% if(flag==1){ %> 
+                <div class="carousel-item active">
+                  <% flag=0; %> 
+              <% }else{ %>
+                <div class="carousel-item">
+              <% } %> 
+                <div class="carousel-item-border">
+                  <video controls>
+                    <source src=<%= video %> >
+                  </video>
+                </div>
+                
+              </div>
+            <% } %> 
+            <% for(let audio of post.audio){ %>
+
+              <% if(flag==1){ %>
+                <div class="carousel-item music-post active">
+                  <% flag=0; %>
+              <% }else{ %>
+                <div class="carousel-item music-post">
+              <% } %> 
+                  <div class="music-carousel-cover">
+                    <div class="carousel-item-border music-carousel">
+                      <div class="concentric-circles post-music">
+                        <i class="fas fa-headphones-alt"></i>
+                      </div>
+                    </div>
+                  </div>
+        
+                  <audio controls>
+                    <source src=<%= audio %> >
+                  </audio>
+        
+                </div> 
+            <% } %> 
+
+            </div>    
+        </div>
+
+        <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#post<%= post._id %>-card" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#post<%= post._id %>-card" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+
+
+
       </div>
-    <!-- </div> -->
+      <% } %> 
     <div class="like-comment">
       
       <% let reactionMap={'like':'fa-thumbs-up','haha':'fa-grin-tears','namaste':'fa-praying-hands','sad':'fa-sad-cry','angry':'fa-angry'} %> 
@@ -56,20 +131,20 @@
       <div id="Post-reaction-popover-<%= post._id %>" class="hidden">
         <div class=" tracking-in-expand swing-top-fwd" id="like">
 
-          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=like"><i class="fas fa-thumbs-up"></i></a>
+          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=like"><i class="fas fa-thumbs-up faa-bounce"></i></a>
         </div>
         <div class=" tracking-in-expand" id="haha">
 
-          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=haha"><i class="fas fa-grin-tears"></i></a>
+          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=haha"><i class="fas fa-grin-tears faa-shake"></i></a>
         </div>
         <div class=" tracking-in-expand" id="namaste">
-          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=namaste"><i class="fas fa-praying-hands"></i></a>
+          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=namaste"><i class="fas fa-praying-hands faa-falling faa-reverse"></i></a>
         </div>
         <div class=" tracking-in-expand" id="sad">
-          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=sad"><i class="fas fa-sad-cry"></i></a>                  
+          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=sad"><i class="fas fa-sad-cry faa-shake"></i></a>                  
         </div>
         <div class=" tracking-in-expand" id="angry">
-          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=angry"><i class="fas fa-angry"></i></a>   
+          <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=angry"><i class="fas fa-angry faa-shake"></i></a>   
         </div>
         <div class=" tracking-in-expand" id="unlike">
           <a href="/likes/toggle/?likeableId=<%= post._id %>&type=Post&reaction=unlike"><i class="fas fa-ban"></i></a>
@@ -77,42 +152,126 @@
         </div>
      </div>
      <!-- --------------------------------------- -->
-      <div class="like-comment-div user-select"  data-bs-toggle="modal" data-bs-target="#comments"><i class="far fa-comments"></i>Comment</div>
+      <div class="like-comment-div user-select"  data-bs-toggle="modal" data-bs-target="#comments-<%= post._id %>"><i class="far fa-comments"></i>Comment</div>
 
-      <div class="modal fade" id="comments" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="comments-<%= post._id %>" tabindex="-1" aria-labelledby="<%= post._id %>ModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
           <div class="modal-content modal-content-comment">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Comments</h5>
+              <h5 class="modal-title" id="<%= post._id %>ModalLabel">Comments</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <div class="commment-img-container">
+              <div class="comment-post-container">
 
-                <!-- <img src="./photoicon.png" alt=""> -->
-                <p><%= post.content %> </p>
-                <div class="comment-logo"><i class="far fa-comments"></i></div>
-              </div>
-             
-              <div class="comment-list-container">
+                <% if(photoCount+videoCount+audioCount!=0){ %>
 
-                <ul class="comment-container" id="comment-list-<%= post._id %>">
-                  <% for(let comment of post.comments){ %> 
-                    <%- include('new_comment',{comment:comment}) %> 
+                  <div id="postComment<%= post._id %>-card" class="carousel comment-carousal slide" data-bs-interval="false">
+                    <div class="carousel-inner">
+
+                      <% let flag=1; %> 
+                      <% for(let photo of post.image){ %>
+                        
+                        <% if(flag==1){ %> 
+                          <div class="carousel-item active">
+                            <% flag=0; %> 
+                        <% }else{ %>
+                          <div class="carousel-item">
+                        <% } %> 
+                        <div class="carousel-item-border">
+                          <img src=<%= photo %>  alt="">
+                        </div>
+                        
+                      </div>
+                      <% } %>
+                      
+                      <% for(let video of post.video){ %> 
+
+
+                        <% if(flag==1){ %>
+
+                            <div class="carousel-item active">
+                              <% flag=0; %> 
+                        <% }else{ %>
+                            <div class="carousel-item">
+                          <% } %>  
+                              <div class="carousel-item-border">
+                                <video controls>
+                                  <source src=<%= video %> >
+                                </video>
+                              </div>
+                          
+                            </div>
+                      <% } %> 
+                      <% for(let audio of post.audio){ %>
+                        
+                        <% if(flag==1){ %>
+                          <div class="carousel-item music-post active">
+                            <% flag=0; %> 
+                        <% }else{ %>
+                          <div class="carousel-item music-post">  
+                        <% } %> 
+
+                        <div class="music-carousel-cover">
+                          <div class="carousel-item-border music-carousel">
+                            <div class="concentric-circles post-music">
+                              <i class="fas fa-headphones-alt"></i>
+                            </div>
+                          </div>
+                        </div>
+      
+                        <audio controls>
+                          <source src=<%= audio %>>
+                        </audio>
+                      </div>
+                      <% } %> 
+                   
+
+
+
+                  </div>
+                  <button class="carousel-control-prev carousel-btn" type="button" data-bs-target="#postComment<%= post._id %>-card" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next carousel-btn" type="button" data-bs-target="#postComment<%= post._id %>-card" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
                   <% } %> 
-                </ul> 
+
+
+                  
+                  <!-- ------------------------------------------ -->
               </div>
+              <div class="comment-logo"><i class="far fa-comments"></i></div>
+
+
+
+
+<!-- --------------------------------------- -->
             </div>
-            <form class="modal-footer" id="comment-create-<%= post._id %>" method="post" action="/comment/create">
-              <div class="comment-input-div"><input name="comment" class="form-control" type="text" placeholder="Comment here.." aria-label="default input example"></div>
-              <input type="hidden" name="postid" value="<%= post._id %>">
-              <button type="submit" class="comment-send"><i class="fas fa-angle-double-right"></i></button>
-            </form>
+
+            <div class="comment-list-container">
+
+              <ul class="comment-container" id="comment-list-<%= post._id %>">
+                <% for(let comment of post.comments){ %> 
+                  <%- include('new_comment',{comment:comment}) %> 
+                <% } %> 
+              </ul> 
+            </div>
+
+
+
+<!-- ------------------------------------- -->
           </div>
+          <form class="modal-footer" id="comment-create-<%= post._id %>" method="post" action="/comment/create">
+            <div class="comment-input-div"><input name="comment" class="form-control" type="text" placeholder="Comment here.." aria-label="default input example"></div>
+            <input type="hidden" name="postid" value="<%= post._id %>">
+            <button type="submit" class="comment-send"><i class="fas fa-angle-double-right"></i></button>
+          </form>
         </div>
       </div>
     </div>
   </div>
-
-
-    
+ </div>

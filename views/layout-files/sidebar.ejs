@@ -2,77 +2,25 @@
     <div class="side-list-sub-container">
         <div class="heading user-select"><p>Friends</p></div>
         <ul id="friends">
-            
-          <li>
-            <div class="list-content-wrapper">
-              <a href="" class="profile-btn">naman</a>
-              <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
-            </div>
-            <div class="side-list-border"></div>
-          </li>
-          <li>
-            <div class="list-content-wrapper">
-              <a href="" class="profile-btn">aamir</a>
-              <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
-            </div>
-            <div class="side-list-border"></div>
-          </li>
-          <li>
-            <div class="list-content-wrapper">
-              <a href="" class="profile-btn">soumya</a>
-              <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
-            </div>
-            <div class="side-list-border"></div>
-          </li>
-          <li>
-            <div class="list-content-wrapper">
-              <a href="" class="profile-btn">vinita</a>
-              <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
-            </div>
-            <div class="side-list-border"></div>
-          </li>
-          <li>
-            <div class="list-content-wrapper">
-              <a href="" class="profile-btn">ravi</a>
-              <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
-            </div>
-            <div class="side-list-border"></div>
-          </li>
-          <li>
-            <div class="list-content-wrapper">
-              <a href="" class="profile-btn">xyz</a>
-              <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
-            </div>
-            <div class="side-list-border"></div>
-          </li>
-          <li>
-            <div class="list-content-wrapper">
-              <a href="" class="profile-btn">xyz</a>
-              <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
-            </div>
-            <div class="side-list-border"></div>
-          </li>
-          <li>
-            <div class="list-content-wrapper">
-              <a href="" class="profile-btn">xyz</a>
-              <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
-            </div>
-            <div class="side-list-border"></div>
-          </li>
-          <li>
-            <div class="list-content-wrapper">
-              <a href="" class="profile-btn">xyz</a>
-              <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
-            </div>
-            <div class="side-list-border"></div>
-          </li>
-          <li>
-            <div class="list-content-wrapper">
-              <a href="" class="profile-btn">xyz</a>
-              <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
-            </div>
-            <div class="side-list-border"></div>
-          </li>
+          <% for(let friend of userFriends){ %> 
+
+            <li>
+              <div class="list-content-wrapper">
+                <a href="" class="profile-btn">
+
+                  <% if(friend.requestBy.id.toString()==user.id.toString()){ %> 
+                    <%= friend.requestTo.name %> 
+                  <% }else{ %>
+                    <%= friend.requestBy.name %> 
+                  <% } %> 
+                </a>
+                <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
+              </div>
+              <div class="side-list-border"></div>
+            </li>
+
+            <% } %> 
+          
         </ul>
     </div>
     <div class="side-list-sub-container">
@@ -81,7 +29,9 @@
       <div class="heading user-select"><p>Groups</p></div>
       <ul id="users">
           
-          <li><p>xyz</p><div class="side-list-border"></div></li>
+
+
+          
           <li><p>xyz</p><div class="side-list-border"></div></li>
           <li><p>xyz</p><div class="side-list-border"></div></li>
           <li><p>xyz</p><div class="side-list-border"></div></li>
@@ -106,76 +56,27 @@
     <div class="heading user-select"><p>Users</p></div>
     <ul id="users">
         
-      <li>
-        <div class="list-content-wrapper">
-          <a href="" class="profile-btn">xyz</a>
-          <a href="" class="msg-add-friend"><i class="fas fa-user-plus"></i></i></a>
-        </div>
-        <div class="side-list-border"></div>
-      </li>
-      <li>
-        <div class="list-content-wrapper">
-          <a href="" class="profile-btn">xyz</a>
-          <a href="" class="msg-add-friend"><i class="fas fa-user-plus"></i></i></a>
-        </div>
-        <div class="side-list-border"></div>
-      </li>
-      <li>
-        <div class="list-content-wrapper">
-          <a href="" class="profile-btn">xyz</a>
-          <a href="" class="msg-add-friend"><i class="fas fa-user-plus"></i></i></a>
-        </div>
-        <div class="side-list-border"></div>
-      </li>
-      <li>
-        <div class="list-content-wrapper">
-          <a href="" class="profile-btn">xyz</a>
-          <a href="" class="msg-add-friend"><i class="fas fa-user-plus"></i></i></a>
-        </div>
-        <div class="side-list-border"></div>
-      </li>
-      <li>
-        <div class="list-content-wrapper">
-          <a href="" class="profile-btn">xyz</a>
-          <a href="" class="msg-add-friend"><i class="fas fa-user-plus"></i></i></a>
-        </div>
-        <div class="side-list-border"></div>
-      </li>
-      <li>
-        <div class="list-content-wrapper">
-          <a href="" class="profile-btn">xyz</a>
-          <a href="" class="msg-add-friend"><i class="fas fa-user-plus"></i></i></a>
-        </div>
-        <div class="side-list-border"></div>
-      </li>
-      <li>
-        <div class="list-content-wrapper">
-          <a href="" class="profile-btn">xyz</a>
-          <a href="" class="msg-add-friend"><i class="fas fa-user-plus"></i></i></a>
-        </div>
-        <div class="side-list-border"></div>
-      </li>
-      <li>
-        <div class="list-content-wrapper">
-          <a href="" class="profile-btn">xyz</a>
-          <a href="" class="msg-add-friend"><i class="fas fa-user-plus"></i></i></a>
-        </div>
-        <div class="side-list-border"></div>
-      </li>
-      <li>
-        <div class="list-content-wrapper">
-          <a href="" class="profile-btn">xyz</a>
-          <a href="" class="msg-add-friend"><i class="fas fa-user-plus"></i></i></a>
-        </div>
-        <div class="side-list-border"></div>
-      </li>
-      <li>
-        <div class="list-content-wrapper">
-          <a href="" class="profile-btn">xyz</a>
-          <a href="" class="msg-add-friend"><i class="fas fa-user-plus"></i></i></a>
-        </div>
-        <div class="side-list-border"></div>
-      </li>
+      <% for(let user of all_users){ %> 
+        <% if((user._id).toString()!=(locals.user._id).toString()){ %> 
+        <li id="all_users_id_<%= user.id %>">
+          <div class="list-content-wrapper">
+            <a href="" class="profile-btn"><%= user.name %></a>
+            <a href="" class="msg-add-friend" userIdValue="<%= user.id %>">
+              
+              <% if(locals.user.sendedRequest.includes(user.id)){ %> 
+                <i class="fas fa-check"></i>
+              <% }else{ %>
+                <i class="fas fa-user-plus"></i>
+              <% } %> 
+             
+            
+            </a>
+          </div>
+          <div class="side-list-border"></div>
+        </li>
+        <% } %> 
+      <% } %> 
+      
 
     </ul>
 
@@ -188,3 +89,6 @@
       </div>
     </div>
 </div>
+<script>
+  console.log('userFriends: ','<%=userFriends%>');
+</script>

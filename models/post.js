@@ -64,13 +64,13 @@ const file_storage=multer.diskStorage({
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         
         if(videoArray.includes(file.mimetype)){
-            cb(null, file.fieldname + '-' + uniqueSuffix+"."+path.extname(file.originalname));
+            cb(null, file.fieldname + '-' + uniqueSuffix+path.extname(file.originalname));
         }
         else if(audioArray.includes(file.mimetype)){
-            cb(null, file.fieldname + '-' + uniqueSuffix+"."+path.extname(file.originalname));
+            cb(null, file.fieldname + '-' + uniqueSuffix+path.extname(file.originalname));
         }
         else if(photoArray.includes(file.mimetype)){
-            cb(null, file.fieldname + '-' + uniqueSuffix+"."+path.extname(file.originalname));
+            cb(null, file.fieldname + '-' + uniqueSuffix+path.extname(file.originalname));
         }
 
     }

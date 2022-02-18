@@ -1,17 +1,18 @@
 <link rel="stylesheet" href="<%= assetPath('css/home.css') %>">
 <main id="main-content">
 
-  <div id="post-something">
+  <div id="post-something" value=<%= locals.user %>>
     <div id="post-input" class="btn" data-bs-toggle="modal" data-bs-target="#create-post">
       <p>what's on your mind Buddy??</p>
     </div>
   </div>
   <div class="posts-container">
+    <% if(posts.length>0){ %> 
+      <% for(let post of posts){ %>
 
-    <% for(let post of posts){ %>
-
-      <%- include('new_post',{post:post}) %>
-        <% } %>
+        <%- include('new_post',{post:post}) %>
+          <% } %>
+          <% } %> 
   </div>
 
 </main>
@@ -78,10 +79,10 @@
         </div>
         <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel">
           <div class="offcanvas-header">
-            <h5 id="offcanvasTopLabel">Offcanvas top</h5>
+            <h5 id="offcanvasTopLabel">Preview</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
-          <div class="offcanvas-body">
+          <div class="offcanvas-body" id="preview-popover">
 
           </div>
         </div>
@@ -94,3 +95,11 @@
 </div>
 
 <script src="<%= assetPath("front_java/home.js") %>"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+<script src="<%= assetPath('front_java/chatEngine.js') %>" type="text/javascript"></script>
+<% if(locals.user){ %>
+  <script>
+
+      new chatEngine('chat-box','<%=locals.user.email%>','<%=locals.user.id%>','<%=locals.user.name%>');
+  </script>
+<% } %> 

@@ -25,7 +25,9 @@
 const Message=require('../models/message');
 const Chatroom=require('../models/chatRoom');
 const User=require('../models/user');
-module.exports.chatSockets=function(socketServer){
+const Friend=require('../models/friends');
+let socketId=require('../variableContainer/variableContainer').socketIdContainer;
+module.exports.chatSockets=async function(socketServer){
 
     let io=require('socket.io')(socketServer,{
         cors:{
@@ -41,67 +43,60 @@ module.exports.chatSockets=function(socketServer){
         socket.on('disconnect',function(){
             console.log('socket disconnected');
         });
-        // if from front end side a request comes in to join a chat room with some name(say: codial) then these lines 
-        // of code will habdle the situation
-        socket.on('join_room',function(data){
-            // while requesting from frontend we have sended some data which is present in the function's argument
-            console.log('joining request recieved',data);
-            socket.join(data.chatroom);
-            // emitting an event namely 'user_joined' to tell everybody in the room that a new user has joined
-            io.in(data.chatroom).emit('user_joined',data);
+        
+        socket.on('join_universal_room',function(data){
+            console.log(data.user_id);
+            socketId[data.user_id]=socket.id;
+            console.log('user joined in universal room!',data);
+            console.log(socketId);
+
         });
 
-        socket.on('send_message',function(data){
-            console.log('message request recieved',data);
+        socket.on('sendFriendReq',async function(data){
+            console.log('data.toUserId: ',data.toUserId);
+            console.log('socketId[data.toUserId:] ',socketId[data.toUserId]);
             
-            
-            Message.create({
-                message:data.message,
-                sentBy:data.userId,
-                chatroom:null
-            },function(err,message){
-                if(err){
-                    console.log('message error: ',err);
+                let requestedby=await User.findById(data.fromUserId);
+                if(requestedby.sendedRequest.includes(data.toUserId)){
+                    if(socketId[data.toUserId]){
+                        io.sockets.in(socketId[data.toUserId]).emit('friend_request_cancelled_reciever', {fromUser: data.fromUserId,username:requestedby.name});                     
+                    }
+                    await User.updateOne({_id:data.toUserId},{$pull:{friendRequests:data.fromUserId}});
+                    await User.updateOne({_id:data.fromUserId},{$pull:{sendedRequest:data.toUserId}});
+                    io.sockets.in(socketId[data.fromUserId]).emit('friend_request_cancelled_sender',{toUser: data.toUserId});
+
+                }else{
+
+
+                    if(socketId[data.toUserId]){
+                        io.sockets.in(socketId[data.toUserId]).emit('friend_request_recieved', {fromUser: data.fromUserId,username:requestedby.name});                     
+                    }
+                    io.sockets.in(socketId[data.fromUserId]).emit('friend_request_sent',{toUser: data.toUserId});
+                    await User.updateOne({_id:data.toUserId},{$push:{friendRequests:data.fromUserId}});
+                    await User.updateOne({_id:data.fromUserId},{$push:{sendedRequest:data.toUserId}});
                 }
-                Chatroom.findOneAndUpdate({name:data.chatroomName},{$push:{messageId:message._id}},function(err,chatroom){
-                    if(err){
-                        console.log('chatroom error: ',err);
-                    }
-                    console.log('chatroom: ',chatroom);
-                    if(!chatroom){
-                        // callback hell..we could do it better by using async await
-                        Chatroom.create({name:data.chatroomName},function(err,chatRoom){
-                            console.log(chatRoom);
-                            Chatroom.findByIdAndUpdate(chatRoom._id,{$push:{messageId:message._id}},function(err,chatRoom){
-                                User.findByIdAndUpdate(data.userId,{$push:{chatroom:chatRoom._id}},function(err,user){
-                                    Message.findByIdAndUpdate(message._id,{chatroom:chatRoom._id},function(err,message){
-                                        if(err){
-                                            console.log(err);
-                                        }
-                                    });
-                                });
-                                
-                            });
-                        });
-                    }else{
-                        console.log('data.userId: ',data.userId);
-                        User.findById(data.userId,function(err,user){
-                            console.log('user from else side: ',user);
-                            console.log('user.chatroom: ',user.chatroom);
-                            if(!user.chatroom.includes(chatroom._id)){
-                                // it won't work without callback function
-                                User.findByIdAndUpdate(user._id,{$push:{chatroom:chatroom._id}},function(err,user){});  
-                            }
-                             // it won't work without callback function
-                            Message.findByIdAndUpdate(message._id,{chatroom:chatroom},function(err,msg){});
-                        });
-                        
-                    }
-                    
-                });
-                io.in(data.chatroomName).emit('new_message',data);
-            });
+                console.log('new_friend_req');
         });
-        
+        socket.on('friend_request_accepted',async function(data){
+
+            let user1=await User.findById(data.toUserId);
+            await User.updateOne({_id:data.fromUserId},{$push:{reqAcceptedNotif:data.toUserId}});
+            io.sockets.in(socketId[data.fromUserId]).emit('request accepted by friend',{toUser:data.toUserId,toUserName:user1.name});
+        });
+        socket.on('friend_request_rejected',async function(data){
+
+            io.sockets.in(socketId[data.fromUserId]).emit('request rejected by user',{toUser:data.toUserId});
+
+        });
     });
+
+
+
+
+
+
+
+
+    // let clients = io.sockets.adapter.rooms.get('Room Name');
+    // console.log('clients: ',clients);
 }

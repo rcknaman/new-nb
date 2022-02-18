@@ -6,14 +6,85 @@
     </div>
     <div id="header-right">
 
-      <div id="mini-options">
-        <i class="fas fa-stream"></i>
+      
+        
+
+      <div id="mini-options" class="dropdown header-btn">
+      
+        <button type="button" id="mini_btn" class="btn btn-primary position-relative" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-stream"></i>
+          <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
+            <span class="visually-hidden">New alerts</span>
+          </span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="mini_btn">
+          <li><a class="dropdown-item" href="#">Action</a></li>
+          <li><a class="dropdown-item" href="#">Another action</a></li>
+          <li><a class="dropdown-item" href="#">Something else here</a></li>
+        </ul>
       </div>
-      <div id="notification-bell">
-        <i class="fas fa-bell"></i>
+
+
+
+      <div id="notification-bell" class="dropdown header-btn">
+        
+        <button type="button" id="notification_btn" class="btn btn-primary position-relative" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-bell"></i>
+          <% if(locals.myProfile.friendRequests.length+locals.user.reqAcceptedNotif.length){ %>
+
+          <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
+            <span class="visually-hidden">New alerts</span>
+          </span>
+          <% } %> 
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="notification_btn">
+
+          <% for(let friendreq of locals.myProfile.friendRequests){ %>
+            
+            <li type="friend-request"><div class="dropdown-item request-drpdwn">
+
+
+             <div class="req-detail" userid="<%= friendreq._id %>">
+              <img src="" alt="">
+              <p><%= friendreq.name %> </p>
+             </div>
+             <div class="req-decision">
+              <button decision="accept"><i class="far fa-check-circle fa-sm"></i></button>
+              <button decision="reject"><i class="far fa-times-circle fa-sm"></i></button>
+             </div>
+            </div></li>
+
+
+          <% } %> 
+          <% for(let acceptedreq of locals.myProfile.reqAcceptedNotif){ %>
+            
+            <li type="other-notifs" notif_uid="<%=acceptedreq.id %>"><div class="dropdown-item other-notifs">
+              <div class="req-detail">
+                  <p><a href=""><%=acceptedreq.name %></a> has accepted your friend request</p>
+              </div>
+              <div class="req-decision notif-close-btn">
+                <i class="fas fa-times"></i>
+              </div>
+              </div>
+            </li>
+          <% } %> 
+          <% if(locals.myProfile.friendRequests.length+locals.user.reqAcceptedNotif.length){ %>
+            <li id="no_notifs" class="hidden">no notification</li>
+          <% }else{ %>
+            <li id="no_notifs">no notification</li>
+          <% } %> 
+        </ul>
       </div>
-      <div id="user-profile">
-        <i class="fas fa-user"></i>
+
+      <div id="user-profile" class="dropdown header-btn">
+      
+        <button type="button" id="profile_btn" class="btn btn-primary position-relative" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-user"></i>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="profile_btn">
+          <li><a class="dropdown-item" href="#">Sign Out    <i class="fas fa-sign-out-alt"></i></a></li>
+          <li><a class="dropdown-item" href="#">My Profile</a></li>
+        </ul>
       </div>
 
 

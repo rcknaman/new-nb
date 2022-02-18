@@ -3,10 +3,12 @@ const mongoose=require('mongoose');
 let friends= new mongoose.Schema({
 
     requestBy:{
-        type:mongoose.Schema.Types.ObjectId
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'userschema'
     },
     requestTo:{
-        type:mongoose.Schema.Types.ObjectId
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'userschema'
     }
 
 

@@ -22,7 +22,7 @@
                 'color': "white"
             });
             $(' p', chatHeader).css('left', '10px');
-            let userName = $(' .profile-btn', $(this).parent()).text();
+            let userName = $(' .profile-btn', $(this).parent()).text()+' '+'<i class="fas fa-angle-down"></i>';
             $(' p', chatHeader).fadeOut(200, function () {
                 $(this).html(userName).fadeIn(500);
             });
@@ -54,13 +54,27 @@
         $(window).resize(function(){
             if($(window).width()<=450){
                 $('#logo-container a').html(`<i class="fas fa-praying-hands"></i>`);
-                console.log('hi');
             }else{
-                $('#logo-container a').html(`<img src="./finalgif.gif" alt="">`);
-                console.log('hello');
+                $('#logo-container a').html(`<img src="/images/finalgif.gif" alt="">`);
             }
         })
     }
+    // console.log(document.getElementById('chat-container').getElementsByClassName('fa-angle-down')[0])
+    console.log(`$('#chat-container .heading .fa-angle-down'): `,$('#chat-container .heading'));
+    console.log(($('#chat-container>div').first().html()));
+    // $(document).ready(function(){
+
+
+        $(document).on('click','#chat-container .heading i',function(e){
+
+            console.log($(this));
+            $('#chat-container .chats-container').toggleClass('minimize-chat-body');
+            // $('#chat-container').css('height','30px');
+            $('#chat-container').toggleClass('minimize-chat-container');
+            $(this).toggleClass("fa-angle-up fa-angle-down");
+        });
+
+    // });
 
 
     responsive();

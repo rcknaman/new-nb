@@ -5,7 +5,9 @@ const passport=require('passport');
 
 
 const usercontroller=require('../controller/user_controller');
-
+router.get('/fetch-notifs',usercontroller.fetchNotifs);
+router.get('/delete-notifs/:id',usercontroller.deleteNotifs);
+router.get('/sessionCheck',usercontroller.sessionCheck);
 router.get('/profile/:id',passport.checkAuthentication,usercontroller.profile);
 router.get('/signin',usercontroller.signin);
 router.get('/signup',usercontroller.signup);

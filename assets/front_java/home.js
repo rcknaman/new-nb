@@ -63,32 +63,7 @@
 // ==========================================================================================
 
 
-  let createPost=function(){
-
-    let newPostForm=$('#new-post-form');
-    newPostForm.submit(function(e){
-
-        e.preventDefault();
-        $.ajax({
-            type: 'post',
-            url: '/posts/create',
-            data: newPostForm.serialize(),
-            success: function(data){
-                let newPost=new newPostDom(data.data.post,data.data.username);
-                $('.posts-container').prepend(newPost);
-
-                commentCreate(data.data.post._id);
-                likeHandler(data.data.post._id,'post');
-                popoverfunc(data.data.post._id,'post');
-                likeReact('post');
-            },
-            error: function(error){
-                console.log(error.responseText);
-            } 
-        });
-    });
-        
-  }
+  
 
 
   let commentCreate=function(postid){
@@ -149,84 +124,6 @@
 
   }
 
-
-    let newPostDom=function(post,username){
-        return $(`
-        <div class="post" id="post-${post._id}"> 
-
-          <div class="post-header-container">
-            <div class="post-header">
-              <div class="post-user">
-
-                <div class="post-user-pic"></div>
-                <p class="post-user-name">User</p>
-              </div>
-              <div class="post-options">
-                <i class="fas fa-ellipsis-h"></i>
-              </div>
-
-            </div>
-            <p class="post-date-time">
-              <span class="date">Now <span style="color:green;">&#9679;</span></span>
-            </p>
-            <div class="user-text">${post.content}</div>
-          </div>
-
-          <div class="post-content">
-            <img src="./photoicon.png" alt="">
-          </div>
-        
-        <div class="like-comment">
-          
-    
-          <a class="like-btn" tabindex="-1" href="#" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top">
-            <div class="like-comment-div"><i class="far fa-thumbs-up"></i><p>Like</p></div>
-          </a>
-            <!-- ------------------------------- -->
-          `
-          +reactiontabs('Post',post)+
-          `
-         <!-- --------------------------------------- -->
-          <div class="like-comment-div user-select"  data-bs-toggle="modal" data-bs-target="#comments"><i class="far fa-comments"></i>Comment</div>
-    
-          <div class="modal fade" id="comments" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable">
-              <div class="modal-content modal-content-comment">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Comments</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="commment-img-container">
-    
-                    <!-- <img src="./photoicon.png" alt=""> -->
-                    <p></p>
-                    <div class="comment-logo"><i class="far fa-comments"></i></div>
-                  </div>
-                 
-                  <div class="comment-list-container">
-    
-                    <ul class="comment-container" id="comment-list-${post._id}">
-                        
-    
-      
-                    </ul> 
-                  </div>
-                </div>
-                <form class="modal-footer" id="comment-create-${post._id}" method="post" action="/comment/create">
-                  <div class="comment-input-div"><input name="comment" class="form-control" type="text" placeholder="Comment here.." aria-label="default input example"></div>
-                  <input type="hidden" name="postid" value="${post._id}">
-                  <button type="submit" class="comment-send"><i class="fas fa-angle-double-right"></i></button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-        
-        
-        `)
-    }
 
     let newCommentDom=function(comment,username){
 
@@ -311,6 +208,33 @@
 
 // cannot use ajax for posting data and files together!!!
 
+    let filePreview=function(input,type){
+    
+      let img=$('+img',$(input));
+      console.log('$(input)[0].files: ',$(input)[0].files);
+      if($(input)[0].files && $(input)[0].files[0]){  
+        let reader=new FileReader();
+        reader.onload=function(e){
+
+          $(img).prop('src',e.target.result);
+
+        }
+        reader.readAsDataURL($(input)[0].files[0]);
+      }
+
+
+    }
+
+    let aftergivingvaluetoinput=function(input,type){
+
+        $(input).change(function(){
+          $(input).parent().css('display','block');
+          filePreview(this,type);
+          main_preview_field(this);
+        });
+    }
+
+
     let fileUploader=function(){
       let button=$('.upload-btn');
       $(button).on('click',function(e){
@@ -320,21 +244,53 @@
         let type;
         let buttonId=$(this).prop('id');
         console.log(buttonId);
+        let inputFileDom;
         if(buttonId=='upload-video'){
           type="video/*";
+          inputFileDom=`
+          <div class="preview-content" filetype="video">
+            <input type="file" name="file${previewCount}" accept=${type}>
+            <div data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
+              <div class="preview-video-logo"><i class="fas fa-file-video"></i></div>
+              <div class="preview-play"><i class="fas fa-play"></i></div>
+            </div>
+          </div>`
+
+
+          
         }else if(buttonId=='upload-photo'){
           type="image/*";
+          inputFileDom=`
+          <div class="preview-content" filetype="image">
+            <input type="file" name="file${previewCount}" accept=${type}>
+            <img src="" alt="photo"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
+          </div>`
+
+         
         }else if(buttonId=='upload-audio'){
           type="audio/*";
+          inputFileDom=`
+          <div class="preview-content" filetype="audio">
+            <input type="file" name="file${previewCount}" accept=${type}>
+            <div data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
+              <div class="preview-audio-logo"><i class="fas fa-music"></i></div>
+              <div class="preview-play"><i class="fas fa-play"></i></div>
+            </div>
+          </div>`
+
+          
         }else{
           return;
         }
 
-        let inputFileDom=`<div class="preview-content"><input type="file" name="file${previewCount}" accept=${type}><img src="" alt="photo"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"></div>`
+        // let inputFileDom=`<div class="preview-content"><input type="file" name="file${previewCount}" accept=${type}><img src="" alt="photo"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"></div>`
 
         $(previewContainer).append(inputFileDom);
         let newPreview=$(`input[name=file${previewCount}]`);
+        $(newPreview).parent().css('display','none');
+        aftergivingvaluetoinput(newPreview,type);
         $(newPreview).click();
+        
       }); 
     }
     fileUploader();
@@ -383,10 +339,89 @@
 
     postInitialize();
 
+    let main_preview_field=function(fileInputField){
 
+
+      let smallPreview=$(fileInputField).parent();
+      let previewpopover=$('#preview-popover');
+      console.log('jkj: ',$(smallPreview).attr('filetype'));
+      $('>div',$(smallPreview)).click(function(){
+        // console.log('jkj: ',$(smallPreview).prop('filetype'));
+        if($(smallPreview).attr('filetype')=='audio'){
+          $('#preview-popover').css({'padding-top':'0px'},{'padding-bottom':'0px'});
+          if($('#offcanvasTop .btn-close').hasClass('btn-close-white')){
+            $('#offcanvasTop .btn-close').removeClass('btn-close-white');
+          }
+          $('#offcanvasTop').css('background-color','white');
+          let reader=new FileReader();
+          reader.onload=function(e){
+            
+            $(previewpopover).html(`
+            
+
+                <div id="player-logo" class="concentric-circles">
+
+                <i class="fas fa-headphones-alt"></i>
+              </div>
+              <div class="preview-audio-player">
+
+                <audio controls>
+
+                    <source src="${e.target.result}" type="audio/mpeg">
+                    Your Browser Does Not Support Radio
+                </audio>
+              </div>
+            `);
+          }
+
+          reader.readAsDataURL($(fileInputField)[0].files[0]);
+
+        }else if($(smallPreview).attr('filetype')=='video'){
+          $('#preview-popover').css({'padding-top':'10px'},{'padding-bottom':'10px'});
+          $('#offcanvasTop .btn-close').addClass('btn-close-white');
+          $('#offcanvasTop').css('background-color','black');
+          let reader=new FileReader();
+          reader.onload=function(e){
+            console.log('video');
+            $(previewpopover).html(`<video src="${e.target.result}"controls></video>`);
+          }
+          reader.readAsDataURL($(fileInputField)[0].files[0]);
+        }
+      });
+      $('>img',$(smallPreview)).click(function(){
+
+        $('#preview-popover').css({'padding-left':'10px'},{'padding-right':'10px'});
+        $('#offcanvasTop .btn-close').addClass('btn-close-white');
+        $('#offcanvasTop').css('background-color','black');
+        let reader=new FileReader();
+        reader.onload=function(e){
+
+          $(previewpopover).html(`<img src="${e.target.result}" height="400px" width="400px">`);
+        }
+        reader.readAsDataURL($(fileInputField)[0].files[0]);
+
+        $('#preview-popover').css({'padding-top':'10px'},{'padding-bottom':'10px'});
+      })
+    }
 
 }
 
+let sessionCheck=function(){
 
+  $('#post-something').click(function(e){
+    $.ajax({
+      type:'get',
+      url:'/users/sessionCheck',
+      success:function(data){
+        if(data.data.allowed=='no'){
+          window.location.replace("/users/signin");
+        }
+      }
+    })
+  });
+
+}
+
+sessionCheck();
 
 
