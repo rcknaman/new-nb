@@ -186,22 +186,7 @@
     }
 
 
-    let postList=$('.post');
-    let commentList=$('.comment');
-    for(let post of postList){
-
-      let likeableId=$(post).prop('id').slice(5);
-      commentCreate(likeableId);
-      likeHandler(likeableId,'post');
-      popoverfunc(likeableId,'post');
-      likeReact('post');
-    }
-    for(let comment of commentList){
-      let likeableId=$(comment).prop('id').slice(8);
-      likeHandler(likeableId,'comment');
-      popoverfunc(likeableId,'comment');
-      likeReact('comment');
-    }
+ 
 
     // createPost();
 // ------------------------------------------------------------------------------------
@@ -404,6 +389,46 @@
       })
     }
 
+    let deletePost=function(postId){
+      console.log('ul[aria-labelledby="post-options-${postId}"] .post-delete-btn a: ',$('ul[aria-labelledby="post-options-${postId}"] .post-delete-btn a'));
+      $(document).on('click',`ul[aria-labelledby="post-options-${postId}"] .post-delete-btn a`,function(e){
+        e.preventDefault();
+        $.ajax({
+    
+          type:'get',
+          url:`/posts/destroy/${postId}`,
+          success:function(){
+            $(`#post-${postId}`).remove();
+          }
+    
+        });
+    
+    
+      });
+    
+    
+    }
+
+    let postList=$('.post');
+    let commentList=$('.comment');
+    for(let post of postList){
+    
+      let likeableId=$(post).prop('id').slice(5);
+      commentCreate(likeableId);
+      likeHandler(likeableId,'post');
+      popoverfunc(likeableId,'post');
+      likeReact('post');
+      deletePost(likeableId);
+    }
+    for(let comment of commentList){
+      let likeableId=$(comment).prop('id').slice(8);
+      likeHandler(likeableId,'comment');
+      popoverfunc(likeableId,'comment');
+      likeReact('comment');
+    }
+
+
+
 }
 
 let sessionCheck=function(){
@@ -423,5 +448,4 @@ let sessionCheck=function(){
 }
 
 sessionCheck();
-
 

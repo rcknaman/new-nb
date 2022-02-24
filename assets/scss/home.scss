@@ -344,14 +344,19 @@ audio::-webkit-media-controls-panel{
     border-radius: 50%;
     border: 1px solid #B92B27;
     border-radius: 50%;
-    transform: translateX(-50%);
+
     transition: all 0.2s ease-in-out;
     animation: ripple 2.0s 0.2s infinite;
     -webkit-animation: ripple 2.0s 0.2s  infinite;
   }
-  
-  .concentric-circles:hover {
+  .post-content .concentric-circles{
+    transform: translateX(-50%);
+  }
+  .post-content .concentric-circles:hover{
     transform: translateX(-50%) scale(1.2);
+  }
+  .concentric-circles:hover {
+    transform: scale(1.2);
   }
 
 
@@ -509,6 +514,18 @@ audio::-webkit-media-controls-panel{
     align-items: center;
     
     padding-bottom: 5px;
+}
+.post-header .dropdown{
+    justify-self: end;
+
+}
+.post-header .dropdown button{
+    color: black !important;
+    background-color: #fff !important;
+    font-size: 1rem !important;
+    height: fit-content !important;
+    width: fit-content !important;
+    margin-right: 5px;
 }
 .post-date-time{
     width: 100%;
@@ -930,7 +947,15 @@ audio::-webkit-media-controls-panel{
     .carousel-item-border video{
         height: 170px;
     }
-
+    .post-modal-body .post-form{
+        width: 100%;
+    }
+    #post-input-modal{
+        width: 100%;
+    }
+    #post-input-modal>input{
+        width: 80%;
+    }
 }
 @media screen and (max-width:400px){
     #preview-body-content-grid{

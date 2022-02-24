@@ -3,31 +3,10 @@ const Comments=require('../models/comments_model');
 const Likes=require('../models/likes_model');
 const multerFields=require('../models/post').fileStorage;
 let post_cache=require('../variableContainer/variableContainer');
-
+let fs=require('fs');
+let path=require('path');
 module.exports.posts=async function(req,res){
 
-    //     //put res.redirect('back) inside callback function otherwise the req.flash don't work and some other
-    //     //wierd things will happen
-    // try{
-    //     //here we have to use async await syntax if we want to put data of Post.create into some variable..
-    //     //we can't do assign its value if we will be using nested functions 
-    //     let post= await Post.create({
-    //         content:req.body.content,
-    //         user:req.user._id
-    //     });
-    //     if(req.xhr){
-    //         return res.status(200).json({
-    //             data: {
-    //                 post:post,
-    //                 flash: "post created successfully",
-    //                 username: req.user.name
-    //             },
-    //             message: "post created"
-    //         });
-            
-    //     }
-    //     // req.flash('success','post created successfully');
-    //     return res.redirect('back');
 
 
     try{
@@ -85,8 +64,11 @@ module.exports.destroy=async function(req,res){
             //here we are checking that only the person who is author of the post is authorized to delete this post
             //so if the current logged in user is not the author of the post then his request of deleting current post
             //will not be fullfilled by our controller
-    
-        if(post.user==req.user.id){
+            console.log(post.user.toString()==req.user._id.toString());
+            console.log('post.user',post.user);
+            console.log('req.user._id',req.user._id);
+        if(post.user.toString()==req.user._id.toString()){
+            // console.log('post: ',post);
             // finding all comments assocaited with the post to delete comment's likes from Likes db
             // deleting the likes assciaed with each comment
             // here $in is used as an 'or' and the rhs(comments) will be an array or the query object i.e. 
@@ -99,6 +81,34 @@ module.exports.destroy=async function(req,res){
             // deleting associated likes of the post
             await Likes.deleteMany({Likeable:req.params.id,onModel:'Post'});
                 // req.flash('success','post and associate comments deleted successfully');
+            for(let audio of post.audio){
+
+                if(audio && fs.existsSync(__dirname+'/..'+audio)){
+                    fs.unlinkSync(path.join(__dirname+'/..'+audio));
+                }
+
+
+            }
+            for(let video of post.video){
+
+                if(video && fs.existsSync(__dirname+'/..'+video)){
+                    fs.unlinkSync(path.join(__dirname+'/..'+video));
+                }
+
+
+            }
+            for(let image of post.image){
+
+                if(image && fs.existsSync(__dirname+'/..'+image)){
+                    fs.unlinkSync(path.join(__dirname+'/..'+image));
+                }
+
+
+            }
+
+
+
+
             post.remove();
             if(req.xhr){
                 return res.status(200).json({
@@ -117,6 +127,7 @@ module.exports.destroy=async function(req,res){
             res.redirect('back');
         }
     } catch (err) {
+        console.log(err);
         return res.json(500,{
             message:'Internal Server Error!'
         });

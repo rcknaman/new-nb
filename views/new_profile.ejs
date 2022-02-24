@@ -1,0 +1,110 @@
+
+<link rel="stylesheet" href="<%= assetPath('css/new_profile.css') %>">
+<link rel="stylesheet" href="<%= assetPath('css/home.css') %>">
+
+
+<main id="main-content">
+
+    <div id="profile">
+
+        <div id="profile-pic">
+          <div id="user-pic"> 
+            <img src="" alt="">
+
+          </div>
+         
+              <% console.log('myProfile.sendedRequest',myProfile.sendedRequest) %> 
+              <% console.log('profileDetails._id',profileDetails._id) %> 
+              <% let recievedRequest=false; %> 
+              <% let sendedRequest=false; %> 
+
+            <% for(let sendedreq of myProfile.sendedRequest){ %>
+              
+              <% if(sendedreq._id.toString()==profileDetails._id.toString()){ %> 
+                <% sendedRequest=true;break; %> 
+              <% } %> 
+            <% } %> 
+            <% if(sendedRequest==false){ %>
+
+              <% for(let sendedreq of myProfile.friendRequests){ %>
+                
+                <% if(sendedreq._id.toString()==profileDetails._id.toString()){ %> 
+                  <% recievedRequest=true;break; %> 
+                <% } %> 
+              <% } %> 
+            <% } %> 
+
+
+
+
+                  <% console.log(sendedRequest); %> 
+              <% if(isFriend){ %>
+                <div id="add-friend" userid="<%= profileDetails.id %>" class="sendMsg">
+                <button  userIdValue="<%= profileDetails._id %>">
+                Message</button></div>
+              <% }else if(sendedRequest){  %>
+                <div id="add-friend" userid="<%= profileDetails.id %>" class="toggleFriendReq">
+                  <button  userIdValue="<%= profileDetails._id %>">
+                   Pending
+                  </button></div>
+              <% }else if(recievedRequest){ %>
+                <div id="add-friend" userid="<%= profileDetails.id %>" class="acceptReject">
+                <button  userIdValue="<%= profileDetails._id %>" decision="accept">
+                  <i class="far fa-check-circle fa-sm"></i>
+                 </button>
+                <button  userIdValue="<%= profileDetails._id %>" decision="reject">
+                  <i class="far fa-times-circle fa-sm"></i>
+                 </button></div>
+                
+              
+              <% }else{ %> 
+                <div id="add-friend" userid="<%= profileDetails.id %>" class="toggleFriendReq">
+                <button  userIdValue="<%= profileDetails._id %>">
+                Add friend
+                </button></div>
+              <% } %> 
+              
+
+              
+        
+        </div>
+        <div id="profile-details">
+
+          <div id="profile-stats">
+            <div id="friends-count">
+              <div class="profile-stats-heading">Friends</div>
+              <div><%= friendCount %></div>
+            </div>
+            <div id="post-count">
+              <div class="profile-stats-heading">Posts</div>
+              <div><%= postsCount %> </div>
+            </div>
+          </div>
+          <div id="description">
+
+            <div id="profileName"><%= profileDetails.name %></div>
+            <div id="userBio">my life my rules Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur cumque accusantium necessitatibus unde. Natus odio eum consequuntur autem beatae voluptatibus quisquam perspiciatis maxime et id. Officia suscipit quis cupiditate molestias?</div>
+
+
+
+          </div>
+        </div>
+
+
+      </div>
+
+
+
+    <div class="posts-container">
+
+      <% if(posts.length>0){ %> 
+        <% for(let post of posts){ %>
+
+          <%- include('new_post',{post:post}) %>
+        <% } %>
+      <% } %> 
+
+
+    </div>
+    </main>
+    <script src="<%= assetPath("front_java/home.js") %>"></script>

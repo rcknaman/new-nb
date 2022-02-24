@@ -25,7 +25,7 @@
 const Message=require('../models/message');
 const Chatroom=require('../models/chatRoom');
 const User=require('../models/user');
-const Friend=require('../models/friends');
+const Friends=require('../models/friends');
 let socketId=require('../variableContainer/variableContainer').socketIdContainer;
 module.exports.chatSockets=async function(socketServer){
 
@@ -44,12 +44,25 @@ module.exports.chatSockets=async function(socketServer){
             console.log('socket disconnected');
         });
         
-        socket.on('join_universal_room',function(data){
+        socket.on('join_universal_room',async function(data){
             console.log(data.user_id);
             socketId[data.user_id]=socket.id;
             console.log('user joined in universal room!',data);
             console.log(socketId);
+            let userFriends1=await Friends.find({requestBy:{$in:[data.user_id]}});
+            let userFriends2=await Friends.find({requestTo:{$in:[data.user_id]}});
+            let userFriends=userFriends1.concat(userFriends2);
+            let userfriendId=new Array();
 
+            for(let friend of userFriends){
+                console.log(friend.requestBy._id,',',data.user_id);
+                if(friend.requestBy.toString()==data.user_id.toString()){
+                    userfriendId.push(friend.requestTo);
+                }else{
+                    userfriendId.push(friend.requestBy);
+                }
+            }
+            io.sockets.in(socketId[data.user_id]).emit('universal room joined',{userfriendId:userfriendId});
         });
 
         socket.on('sendFriendReq',async function(data){
@@ -81,11 +94,16 @@ module.exports.chatSockets=async function(socketServer){
 
             let user1=await User.findById(data.toUserId);
             await User.updateOne({_id:data.fromUserId},{$push:{reqAcceptedNotif:data.toUserId}});
-            io.sockets.in(socketId[data.fromUserId]).emit('request accepted by friend',{toUser:data.toUserId,toUserName:user1.name});
+            io.sockets.in(socketId[data.fromUserId]).emit('request accepted by friend',{toUser:data.toUserId,toUserName:user1.name,friendshipId:data.friendshipId});
         });
         socket.on('friend_request_rejected',async function(data){
 
             io.sockets.in(socketId[data.fromUserId]).emit('request rejected by user',{toUser:data.toUserId});
+
+        });
+        socket.on('message stored in db',async function(data){
+            let sender=await User.findById(data.sentBy);
+            io.sockets.in(socketId[data.sentTo]).emit('new message recieved',{sentBy:data.sentBy,message:data.message,senderName:sender.name,messageId:data.messageId});
 
         });
     });

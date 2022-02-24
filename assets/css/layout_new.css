@@ -138,7 +138,7 @@ header {
 .other-notifs .req-decision:hover {
   background-color: #D9D9DB !important; }
 
-.notification-badge {
+#header-right .notification-badge {
   background-color: #0A58CA !important;
   top: 2px !important; }
 
@@ -293,6 +293,10 @@ header {
   align-items: center;
   border-left: 1px solid gray;
   border-top-right-radius: 10px; }
+
+.msg-add-friend .notification-badge {
+  padding: 4px !important;
+  background-color: #e95853 !important; }
 
 .msg-add-friend:hover {
   background-color: #93939b; }

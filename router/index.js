@@ -8,5 +8,6 @@ router.use('/posts',require('./postrouter'));
 router.use('/comment',require('./commentrouter'));
 router.use('/likes',require('./likes_router'));
 router.use('/api',require('./api/api_route_index'));
+router.use('/message',require('./messageRouter'));
 console.log('router loaded');
 module.exports=router;

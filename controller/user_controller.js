@@ -4,21 +4,122 @@ const path=require('path');
 const fs=require('fs');
 const Friends=require('../models/friends');
 const crypyo=require('crypto');
+const Message=require('../models/message');
+let Posts=require('../models/post');
 const UpdatePasswordTokenMailer=require('../mailer/update_password_link');
 
 const accessTokenModel=require('../models/accessToken_modal');
+const { log } = require('console');
 module.exports.profile=async function(req,res){
 
     
-    let friendship=await Friends.findOne({requestBy:{$in:[req.params.id,req.user.id]},requestTo:{$in:[req.params.id,req.user.id]}});
+    // let friendship=await Friends.findOne({requestBy:{$in:[req.params.id,req.user.id]},requestTo:{$in:[req.params.id,req.user.id]}});
 
-    let user = await database.findById(req.params.id);
-    return res.render('profile',{
-        title:'codial|profile page',
-        user_profile:user,
-        friendship:friendship
+    let myProfile;
+
+    myProfile=await database.findById(req.user._id)
+    .populate({
+        path:'chatroom',
+        populate:{
+            path:'messageId'
+        }
+    })
+    .populate({
+        path:'friendRequests',
+        select:'name'
+    })
+    .populate({
+        path:'sendedRequest',
+        select:'name'
+    })
+    .populate({
+        path:'reqAcceptedNotif',
+        select:'name'
     });
 
+    let userFriends1=await Friends.find({requestBy:{$in:[req.user.id]}})
+    
+    .populate({
+        path:'requestBy',
+        select:'name'
+    })
+    .populate({
+        path:'requestTo',
+        select:'name'
+    });
+    let userFriends2=await Friends.find({requestTo:{$in:[req.user.id]}})
+
+    .populate({
+        path:'requestBy',
+        select:'name'
+    })
+    .populate({
+        path:'requestTo',
+        select:'name'
+    });
+    
+    let userFriends=userFriends1.concat(userFriends2);
+    let userfriendId=new Array();
+    let newMsgCheck=new Array();
+    
+    for(let friend of userFriends){
+        if(friend.requestBy._id.toString()==req.user._id.toString()){
+            userfriendId.push(friend.requestTo._id);
+        }else{
+            userfriendId.push(friend.requestBy._id);
+        }
+        if(friend.messageId.length){
+            msgArraySize=friend.messageId.length;
+            let lastMsg=await Message.findById(friend.messageId[msgArraySize-1]).populate();
+            if(lastMsg.sentBy.toString()==req.user.id.toString()){
+                newMsgCheck.push('true');
+            }else{
+
+                if(lastMsg.seen=='false'){
+                    newMsgCheck.push('false');
+                }else{
+                    newMsgCheck.push('true');
+                }   
+            }
+        }
+        else{
+            newMsgCheck.push('true');
+        }
+    }
+    let Alluser=await database.find({_id:{$nin:userfriendId}});
+    let profileDetails=await database.findById(req.params.id);
+
+    // when the user had friend requested to end user
+    let friendship1=await Friends.find({requestBy:{$in:[req.params.id]}});
+    let friendship2=await Friends.find({requestTo:{$in:[req.params.id]}});
+    let friendship=friendship1.concat(friendship2);
+    let isFriend=await Friends.findOne({requestBy:{$in:[req.user.id,req.params.id]},requestTo:{$in:[req.user.id,req.params.id]}});
+    let posts=await Posts.find({user:req.params.id})
+    .populate('user')
+    .sort('-createdAt')
+    .populate({
+        path: 'comments',
+        populate: {
+            path:'user likes'
+        }
+    })  
+    .populate({
+        path:'likes',
+        select:'user reaction'
+    });
+    return res.render('new_profile', {
+        title: 'codial|profile page',
+        all_users:Alluser,
+        userFriends:userFriends,
+        myProfile:myProfile,
+        newMsgCheck:newMsgCheck,
+        userfriendId:userfriendId,
+        friendCount:friendship.length,
+        profileDetails:profileDetails,
+        postsCount:posts.length,
+        posts:posts,
+        isFriend:isFriend
+    });
 
 }
 module.exports.sessionCheck=function(req,res){
@@ -92,10 +193,8 @@ module.exports.create= function(req,res){
         database.findOne({'email': req.body.email}, function(err,user){
             if(err){
                 console.log('error in finding the user in signing up');
-                console.log('error h bc');
                 return res.redirect('back');
             }
-            console.log(!user);
             if(!user){
                 //here req.body is the data which we are saving and only that data is saved which is 
                 //present in schema i.e. confirm password will not be stored in our database in our case
@@ -113,7 +212,6 @@ module.exports.create= function(req,res){
 
                 });
             }else{
-                console.log('wtf');
                 return res.redirect('back');
             }
     

@@ -95,11 +95,3 @@
 </div>
 
 <script src="<%= assetPath("front_java/home.js") %>"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
-<script src="<%= assetPath('front_java/chatEngine.js') %>" type="text/javascript"></script>
-<% if(locals.user){ %>
-  <script>
-
-      new chatEngine('chat-box','<%=locals.user.email%>','<%=locals.user.id%>','<%=locals.user.name%>');
-  </script>
-<% } %> 

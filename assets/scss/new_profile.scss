@@ -1,0 +1,92 @@
+#profile{
+    width: 100%;
+    min-height: 200px;
+    display: flex;
+    border: 1px solid #D9D9DB;
+}
+#profile-details{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+#profile-details>div{
+    height: 50%;
+}
+#profile-stats{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 1px solid #D9D9DB;
+}
+#profile-stats>div{
+    height: 70px;
+    width: 70px;
+    border: 1px solid #D9D9DB;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+#user-pic{
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+#user-pic>img{
+    height: 100px;
+    width: 100px;
+    border: 1px solid gray;
+}
+.profile-stats-heading{
+    height: 15px;
+    font-size: 10px;
+    text-align: center;
+}
+#profile-pic{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border-right: 1px solid #D9D9DB;
+}
+#add-friend>button{
+    border-radius: 5px;
+    background-color: #B92B27;
+    border: 1px solid #B92B27;
+    padding: 3px;
+    color: white;
+    transition: all .2s ease-in-out;    
+}
+#add-friend>button:hover{
+    background-color: #7c1310;
+}
+#description{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+#description>div{
+    padding-left: 5px;
+}
+#userBio{
+    overflow-y: scroll;
+    user-select: none;
+}
+#userBio::-webkit-scrollbar{
+    display: none;
+}
+#profileName{
+    user-select: none;
+    border-bottom: 1px solid #0A58CA;
+}
+#friends-count div,#post-count div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#friends-count div:last-of-type,#post-count div:last-of-type{
+    flex-grow: 1;
+}

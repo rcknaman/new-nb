@@ -7,9 +7,21 @@
         <div class="post-user-pic"></div>
         <p class="post-user-name"><%= post.user.name %> </p>
       </div>
-      <div class="post-options">
+      <!-- <div class="post-options">
         <i class="fas fa-ellipsis-h"></i>
+      </div> -->
+
+      <div class="dropdown">
+        <button class="btn btn-secondary" type="button" id="post-options-<%= post._id %>" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-ellipsis-h"></i>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="post-options-<%= post._id %>">
+          <li class="post-delete-btn"><a class="dropdown-item">Delete</a></li>
+        </ul>
       </div>
+
+
+
 
     </div>
     <p class="post-date-time">

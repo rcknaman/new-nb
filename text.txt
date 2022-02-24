@@ -1,0 +1,6 @@
+    <% if(posts.length>0){ %> 
+        <% for(let post of posts){ %>
+  
+          <%- include('new_post',{post:post}) %>
+        <% } %>
+    <% } %> 

@@ -2,23 +2,34 @@
     <div class="side-list-sub-container">
         <div class="heading user-select"><p>Friends</p></div>
         <ul id="friends">
+          <% let friendIndex=0; %> 
           <% for(let friend of userFriends){ %> 
+            <% let friendObj %>
 
-            <li>
+            
+            <% if(friend.requestBy.id.toString()==user.id.toString()){ %>
+              <% friendObj= friend.requestTo%> 
+            <% }else{ %>
+              <% friendObj=friend.requestBy %>  
+            <% } %> 
+
+            <li friendId="<%= friendObj.id %>" friendshipId="<%= friend.id %>">
               <div class="list-content-wrapper">
-                <a href="" class="profile-btn">
-
-                  <% if(friend.requestBy.id.toString()==user.id.toString()){ %> 
-                    <%= friend.requestTo.name %> 
-                  <% }else{ %>
-                    <%= friend.requestBy.name %> 
+                <a href="/users/profile/<%= friendObj.id %>" class="profile-btn">
+                  <%= friendObj.name %> 
+                </a>
+                <a class="msg-add-friend initiate-msg">
+                  <i class="fas fa-comment-dots"></i>
+                  <% if(newMsgCheck[friendIndex].toString()=='false'){ %> 
+                    <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
+                      <span class="visually-hidden">New alerts</span>
+                    </span>
                   <% } %> 
                 </a>
-                <a href="" class="msg-add-friend"><i class="fas fa-comment-dots"></i></a>
               </div>
               <div class="side-list-border"></div>
             </li>
-
+            <% friendIndex++; %> 
             <% } %> 
           
         </ul>
@@ -60,7 +71,7 @@
         <% if((user._id).toString()!=(locals.user._id).toString()){ %> 
         <li id="all_users_id_<%= user.id %>">
           <div class="list-content-wrapper">
-            <a href="" class="profile-btn"><%= user.name %></a>
+            <a href="/users/profile/<%= user.id %>" class="profile-btn"><%= user.name %></a>
             <a href="" class="msg-add-friend" userIdValue="<%= user.id %>">
               
               <% if(locals.user.sendedRequest.includes(user.id)){ %> 
@@ -68,7 +79,7 @@
               <% }else{ %>
                 <i class="fas fa-user-plus"></i>
               <% } %> 
-             
+
             
             </a>
           </div>
@@ -89,6 +100,3 @@
       </div>
     </div>
 </div>
-<script>
-  console.log('userFriends: ','<%=userFriends%>');
-</script>

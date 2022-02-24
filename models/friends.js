@@ -9,7 +9,13 @@ let friends= new mongoose.Schema({
     requestTo:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'userschema'
-    }
+    },
+    messageId:[{
+
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Message'
+
+    }]
 
 
 });
