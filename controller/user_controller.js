@@ -186,6 +186,66 @@ module.exports.signup=function(req,res){
         layout:'new_signup'
     })
 }
+
+module.exports.friendAndGroups=async function(req,res){
+
+    let userFriends1=await Friends.find({requestBy:{$in:[req.user.id]}})
+    
+    .populate({
+        path:'requestBy',
+        select:'name avatar'
+    })
+    .populate({
+        path:'requestTo',
+        select:'name avatar'
+    });
+    let userFriends2=await Friends.find({requestTo:{$in:[req.user.id]}})
+
+    .populate({
+        path:'requestBy',
+        select:'name avatar'
+    })
+    .populate({
+        path:'requestTo',
+        select:'name avatar'
+    });
+    
+    let userFriends=userFriends1.concat(userFriends2);
+    let userfriendId=new Array();
+    let newMsgCheck=new Array();
+    
+    for(let friend of userFriends){
+        if(friend.requestBy._id.toString()==req.user._id.toString()){
+            userfriendId.push(friend.requestTo._id);
+        }else{
+            userfriendId.push(friend.requestBy._id);
+        }
+        if(friend.messageId.length){
+            msgArraySize=friend.messageId.length;
+            let lastMsg=await Message.findById(friend.messageId[msgArraySize-1]).populate();
+            if(lastMsg.sentBy.toString()==req.user.id.toString()){
+                newMsgCheck.push('true');
+            }else{
+
+                if(lastMsg.seen=='false'){
+                    newMsgCheck.push('false');
+                }else{
+                    newMsgCheck.push('true');
+                }   
+            }
+        }
+        else{
+            newMsgCheck.push('true');
+        }
+    }
+
+
+
+
+    res.render('friends&groups',{layout:'friends&groups',newMsgCheck:newMsgCheck,userFriends:userFriends});
+}
+
+
 module.exports.create= function(req,res){
 
     database.uploadedAvatar(req,res,function(err){
@@ -261,48 +321,60 @@ module.exports.destroySession=function(req,res){
 //     }
 // }
 
+module.exports.updateProfilePage=function(req,res){
+
+    return res.render('update_profile',{layout:'update_profile'});
+
+
+
+}
+
+
+
 module.exports.update = async function(req,res){
 
     
 
-    if(req.params.id==req.user.id){
         // let user= await findByIdAndUpdate({name:req.body.name,email:req.body.email});
 
-        try{
-            let user=await database.findById(req.params.id);
+    try{
+        let user=await database.findById(req.user.id);
 
-            database.uploadedAvatar(req,res,function(err){
-                if(err){console.log("***multer error***: ",err);}
-                
+        database.uploadedAvatar(req,res,function(err){
+            if(err){console.log("***multer error***: ",err);}
+            
 
-                //req.body could'nt be accesible without using multer as the form is multipart type of form(see profilr.ejs)
+            //req.body could'nt be accesible without using multer as the form is multipart type of form(see profilr.ejs)
+            if(req.user.id==req.body.userid){
 
                 user.name=req.body.name;
                 user.email=req.body.email;
-
+                user.bio=req.body.bio;
                 if(req.file){
-
+    
                     if(user.avatar && fs.existsSync(__dirname+'/..'+user.avatar)){
                         fs.unlinkSync(path.join(__dirname+'/..'+user.avatar));
                     }
-
+    
                     user.avatar=database.avatarPath + '/' + req.file.filename;
                 }
                 user.save();
-                return res.redirect('back');
-            });
+                return res.redirect(`/users/profile/${req.user.id}`);
+
+            }else{
+                return res.status(401).send('Unauthorized');
+            }
+
+        });
 
 
-        }catch(err){
-            req.flash('error',"updation error");
-            console.log('catch error',err);
-            return res.redirect('back');
-        }
-
-    }else{
-        req.flash('error','Unauthorized')
-        return res.status(401).send('Unauthorized');
+    }catch(err){
+        req.flash('error',"updation error");
+        console.log('catch error',err);
+        return res.redirect('back');
     }
+
+
 }
 
 // this function renders a page where user enters their email associated with forgotten password account

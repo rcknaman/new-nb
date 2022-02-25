@@ -17,6 +17,7 @@
     justify-content: space-around;
     align-items: center;
     border-bottom: 1px solid #D9D9DB;
+    position: relative;
 }
 #profile-stats>div{
     height: 70px;
@@ -34,10 +35,10 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    background-color: black;
 }
 #user-pic>img{
     height: 100px;
-    width: 100px;
     border: 1px solid gray;
 }
 .profile-stats-heading{
@@ -89,4 +90,18 @@
 }
 #friends-count div:last-of-type,#post-count div:last-of-type{
     flex-grow: 1;
+}
+#edit-profile{
+    justify-self: flex-start;
+    align-self: flex-end;
+    position: absolute;
+    right: 0%;
+    top: 0%;
+    padding: 3px;
+    height: fit-content !important;
+    width: fit-content !important;
+    border: none !important;
+    &>a{
+        color: black;
+    }
 }

@@ -9,7 +9,7 @@
 
         <div id="profile-pic">
           <div id="user-pic"> 
-            <img src="" alt="">
+            <img src="<%= profileDetails.avatar %>" alt="">
 
           </div>
          
@@ -36,8 +36,6 @@
 
 
 
-
-                  <% console.log(sendedRequest); %> 
               <% if(isFriend){ %>
                 <div id="add-friend" userid="<%= profileDetails.id %>" class="sendMsg">
                 <button  userIdValue="<%= profileDetails._id %>">
@@ -57,13 +55,17 @@
                  </button></div>
                 
               
-              <% }else{ %> 
+              <% }else if(profileDetails._id.toString()==locals.user.id.toString()){%>
+              
+              
+              
+              <%}else{ %> 
                 <div id="add-friend" userid="<%= profileDetails.id %>" class="toggleFriendReq">
                 <button  userIdValue="<%= profileDetails._id %>">
                 Add friend
                 </button></div>
               <% } %> 
-              
+                
 
               
         
@@ -71,6 +73,10 @@
         <div id="profile-details">
 
           <div id="profile-stats">
+
+            <% if(profileDetails._id.toString()==locals.user.id.toString()){ %> 
+              <div id="edit-profile"><a href="/users/update-page"><i class="fas fa-marker"></i></a></div>
+            <% } %> 
             <div id="friends-count">
               <div class="profile-stats-heading">Friends</div>
               <div><%= friendCount %></div>
@@ -83,7 +89,7 @@
           <div id="description">
 
             <div id="profileName"><%= profileDetails.name %></div>
-            <div id="userBio">my life my rules Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur cumque accusantium necessitatibus unde. Natus odio eum consequuntur autem beatae voluptatibus quisquam perspiciatis maxime et id. Officia suscipit quis cupiditate molestias?</div>
+            <div id="userBio"><%= profileDetails.bio %> </div>
 
 
 

@@ -1,6 +1,6 @@
 const Message=require('../models/message');
 const Friends=require('../models/friends');
-
+const User=require('../models/user');
 module.exports.createMessage=async function(req,res){
 
 
@@ -67,3 +67,28 @@ module.exports.loadMessage=async function(req,res){
     });
 }
 
+module.exports.messagepage= async function(req,res){
+
+
+    let friend=await User.findById(req.params.friendId);
+
+    let friendship=await Friends.findOne({requestBy:{$in:[req.user.id,req.params.friendId]},requestTo:{$in:[req.user.id,req.params.friendId]}})
+    .populate({
+
+        path:'messageId',
+    });
+    let FriendArrayLength=friendship.messageId.length;
+    for(let i=FriendArrayLength-1;i>=0;i--){
+
+        if(friendship.messageId[i].seen=='true'){
+            break;
+        }else{
+            await Message.findByIdAndUpdate(friendship.messageId[i],{seen:'true'});
+        }
+
+    }
+
+    return res.render('chatpage',{friendOrGroupId:req.params.friendId,layout:'chatpage',name:friend.name,messages:friendship.messageId});
+
+
+}

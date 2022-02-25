@@ -27,117 +27,125 @@ class chatEngine{
             let chatHeader = $('#chat-container>div').first();
             $(document).on('click',`#friends li[friendId="${friendId}"] .initiate-msg`,function (e) {
     
-                console.log($(this).parent().parent()[0]);
-                e.preventDefault();
-                $(' .notification-badge',$(this)).remove();
-                $(chatHeader).css({
-                    'background-color': '#0A58CA',
-                    'color': "white"
-                });
-                $(' p', chatHeader).css('left', '10px');
-                let userName = $(' .profile-btn', $(this).parent()).text()+' '+'<i class="fas fa-angle-down"></i>';
-                $(' p', chatHeader).fadeOut(200, function () {
-                    $(this).html(userName).fadeIn(500);
-                });
-                // console.log(`$('#chat-container').attr('friendId'): `,!$('#chat-container').attr('friendId'));
-                if(!$('#chat-container').attr('friendId') || $('#chat-container').attr('friendId').toString()!=friendId.toString()){
 
-                    $.ajax({
-
-                        type:'get',
-                        url:`/message/loadMessage/${friendId}`,
-                        success:function(data){
-                            console.log('entered again 20e',friendId);
-                            let messageDom=``;
-
-                            for(let message of data.data.messages){
-
-                                console.log('1: ',message.sentBy._id);
-                                console.log('2: ',self.userId.toString());
-                                if(message.sentBy._id.toString()==self.userId.toString()){
-                                    messageDom+=`
-                                    
-                                    <li class="self-msg">
-                                        <div class="username"><p>You</p></div>
-                                        <div class="msg-content"><p>${message.message}</p></div>
-                                    </li>
-                                    
-                                    
-                                    `
-                                }
-                                else{
-                                    messageDom+=`
-                                    
-                                    <li class="user-msg">
-                                        <div class="username"><p>${message.sentBy.name}</p></div>
-                                        <div class="msg-content"><p>${message.message}</p></div>
-                                    </li>               
-                                    `
-                                }
+                if($(window).width()>890){
 
 
-                            }
 
 
-                            $('#chat-container .chats-container').html(
+                    e.preventDefault();
+                    $(' .notification-badge',$(this)).remove();
+                    $(chatHeader).css({
+                        'background-color': '#0A58CA',
+                        'color': "white"
+                    });
+                    $(' p', chatHeader).css('left', '10px');
+                    let userName = $(' .profile-btn', $(this).parent()).text()+' '+'<i class="fas fa-angle-down"></i>';
+                    $(' p', chatHeader).fadeOut(200, function () {
+                        $(this).html(userName).fadeIn(500);
+                    });
+                    // console.log(`$('#chat-container').attr('friendId'): `,!$('#chat-container').attr('friendId'));
+                    if(!$('#chat-container').attr('friendId') || $('#chat-container').attr('friendId').toString()!=friendId.toString()){
     
-                                `<ul id="chats">`
-
-                                +messageDom+
-
-
-
-                                `</ul>
-                                <a href="#last-msg" style="display:none;"></a>
-                                <form id="create-msg" method="post" action='/message/create'>
-                                    <div id="input-msg"><input type="text" placeholder="text here..."  name="message"></div>
-                                    <input name="sentTo" type="hidden" value="${friendId}">
-                                    
-                                    <div id="send-msg"><button type="submit"><i class="fas fa-angle-double-right"></i></button></div>
-                                </form>`
-                
-                
-                            )
-
-                            $('#chats li').last().attr('id','last-msg');
-
-                                                
-                            function scrollToBottom(){
-                                const messages = document.getElementById('chats');
-                                const messagesid = document.getElementById('last-msg');  
-                                messages.scrollTop = messagesid.offsetTop;
+                        $.ajax({
+    
+                            type:'get',
+                            url:`/message/loadMessage/${friendId}`,
+                            success:function(data){
+                                console.log('entered again 20e',friendId);
+                                let messageDom=``;
+    
+                                for(let message of data.data.messages){
+    
+                                    if(message.sentBy._id.toString()==self.userId.toString()){
+                                        messageDom+=`
+                                        
+                                        <li class="self-msg">
+                                            <div class="username"><p>You</p></div>
+                                            <div class="msg-content"><p>${message.message}</p></div>
+                                        </li>
+                                        
+                                        
+                                        `
+                                    }
+                                    else{
+                                        messageDom+=`
+                                        
+                                        <li class="user-msg">
+                                            <div class="username"><p>${message.sentBy.name}</p></div>
+                                            <div class="msg-content"><p>${message.message}</p></div>
+                                        </li>               
+                                        `
+                                    }
+    
+    
+                                }
+    
+    
+                                $('#chat-container .chats-container').html(
+        
+                                    `<ul id="chats">`
+    
+                                    +messageDom+
+    
+    
+    
+                                    `</ul>
+                                    <a href="#last-msg" style="display:none;"></a>
+                                    <form id="create-msg" method="post" action='/message/create'>
+                                        <div id="input-msg"><input type="text" placeholder="text here..."  name="message"></div>
+                                        <input name="sentTo" type="hidden" value="${friendId}">
+                                        
+                                        <div id="send-msg"><button type="submit"><i class="fas fa-angle-double-right"></i></button></div>
+                                    </form>`
+                    
+                    
+                                )
+    
+                                $('#chats li').last().attr('id','last-msg');
+    
+                                                    
+                                function scrollToBottom(){
+                                    const messages = document.getElementById('chats');
+                                    const messagesid = document.getElementById('last-msg');  
+                                    messages.scrollTop = messagesid.offsetTop;
+                                }
+                                
+                                scrollToBottom();
+    
                             }
-                            
-                            scrollToBottom();
+    
+                        });
+    
+                        // $("#chats").animate({ scrollTop: 20000000 }, "slow");
+                        $('#chat-container').attr('friendId',friendId);
+                    }
+     
+                    if(flag==1){
+                        $(document).on('click',`#chat-container .heading i`,function(e){
+                            e.preventDefault();
+                            console.log($(this));
+                            console.log(`$('#chat-container .chats-container'): `,$('#chat-container .chats-container'));
+                            $(`#chat-container .chats-container`).toggleClass('minimize-chat-body');
+                            $("#chat-container").toggleClass('minimize-chat-container');
+                            $(this).toggleClass("fa-angle-up fa-angle-down");
+                        });
+                        sendingMsg(self);
+                        flag=0;
+                    }
 
-                        }
+                }else{
 
-                    });
 
-                    // $("#chats").animate({ scrollTop: 20000000 }, "slow");
-                    $('#chat-container').attr('friendId',friendId);
+
+                    window.location.href=`/message/messagepage/${friendId}`;
+
+
+
+
                 }
 
 
-
-                
-
-
-
-
-                
-                if(flag==1){
-                    $(document).on('click',`#chat-container .heading i`,function(e){
-                        e.preventDefault();
-                        console.log($(this));
-                        console.log(`$('#chat-container .chats-container'): `,$('#chat-container .chats-container'));
-                        $(`#chat-container .chats-container`).toggleClass('minimize-chat-body');
-                        $("#chat-container").toggleClass('minimize-chat-container');
-                        $(this).toggleClass("fa-angle-up fa-angle-down");
-                    });
-                    sendingMsg(self);
-                    flag=0;
-                }
 
 
             });
@@ -526,7 +534,7 @@ class chatEngine{
                 $('#add-friend').attr('class','toggleFriendReq');       
             });
             self.socket.on('new message recieved',function(data){
-// sentBy
+                
                 $(`#friends li[friendid=${data.sentBy}] .msg-add-friend`).append(
 
                     `

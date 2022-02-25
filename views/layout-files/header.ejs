@@ -16,7 +16,7 @@
 
         </button>
         <ul class="dropdown-menu" aria-labelledby="mini_btn">
-          <li><a class="dropdown-item" href="#">Personal & Group Chats</a></li>
+          <li><a class="dropdown-item" href="#">Find Buddies</a></li>
         </ul>
       </div>
 
@@ -78,8 +78,8 @@
           <i class="fas fa-user"></i>
         </button>
         <ul class="dropdown-menu" aria-labelledby="profile_btn">
-          <li><a class="dropdown-item" href="#">Sign Out    <i class="fas fa-sign-out-alt"></i></a></li>
-          <li><a class="dropdown-item" href="#">My Profile</a></li>
+          <li><a class="dropdown-item" href="/users/signout">Sign Out    <i class="fas fa-sign-out-alt"></i></a></li>
+          <li><a class="dropdown-item" href="/users/profile/<%= locals.user.id %>">My Profile</a></li>
         </ul>
       </div>
 

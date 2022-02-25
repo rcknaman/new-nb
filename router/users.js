@@ -12,7 +12,9 @@ router.get('/profile/:id',passport.checkAuthentication,usercontroller.profile);
 router.get('/signin',usercontroller.signin);
 router.get('/signup',usercontroller.signup);
 router.post('/create',usercontroller.create);
-router.post('/update/:id',usercontroller.update);
+router.post('/update',passport.checkAuthentication,usercontroller.update);
+router.get('/friendAndGroups',passport.checkAuthentication,usercontroller.friendAndGroups);
+router.get('/update-page',passport.checkAuthentication,usercontroller.updateProfilePage);
 router.post('/create-session',passport.authenticate(
         'local',
         {failureRedirect:'/users/signin'}

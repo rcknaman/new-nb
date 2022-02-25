@@ -46,7 +46,10 @@ const userSchema=new mongoose.Schema({
     reqAcceptedNotif:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'userschema'
-    }]
+    }],
+    bio:{
+        type:String
+    }
 
 },{
     timestamps:true
