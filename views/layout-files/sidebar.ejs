@@ -16,6 +16,17 @@
             <li friendId="<%= friendObj.id %>" friendshipId="<%= friend.id %>">
               <div class="list-content-wrapper">
                 <a href="/users/profile/<%= friendObj.id %>" class="profile-btn">
+
+                  <div class="img-container">
+                    <% if(friendObj.avatar){ %>
+                    <img src="<%= friendObj.avatar %>" alt="">
+                    <% }else{ %>
+                      <i class="fas fa-user"></i>
+                    <% } %>  
+                  </div>
+
+
+
                   <%= friendObj.name %> 
                 </a>
                 <a class="msg-add-friend initiate-msg">
@@ -37,26 +48,48 @@
     <div class="side-list-sub-container">
 
 
-      <div class="heading user-select"><p>Groups</p></div>
-      <ul id="users">
+      <!-- <div class="heading user-select"><p>Groups</p></div> -->
+      <div class="heading user-select" id="group-heading"><p>Groups <span id="new-group" data-bs-toggle="modal" data-bs-target="#CreategroupModal"><i class="fas fa-users"></i>+</span></p></div>
+      <ul id="Groups">
           
+          <% for(let group of groups){ %> 
+
+            <li groupId="<%= group.id %>">
+              <div class="list-content-wrapper">
+                <a class="profile-btn" type="group" data-bs-toggle="modal" admin="<%= group.admin %>"
+                
+                <% if(group.admin.toString()==locals.user.id.toString()){ %> 
+                data-bs-target="#CreategroupModal"
+                  <% }else{ %>
+                    data-bs-target="#ShowGroupModal"
+                  <% } %>
+                  > 
+
+                  <div class="img-container">
+                    <% if(group.groupPic){ %>
+                    <img src="<%= group.groupPic %>" alt="">
+                    <% }else{ %>
+                      <i class="fas fa-user"></i>
+                    <% } %>  
+                  </div>
 
 
-          
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
-          <li><p>xyz</p><div class="side-list-border"></div></li>
+                  <p>
+                    <%= group.name %> 
+                  </p>
+                  
+                </a>
+                <a class="msg-add-friend initiate-msg">
+                  <i class="fas fa-comment-dots"></i>
+
+                </a>
+              </div>
+              <div class="side-list-border"></div>
+            </li>
+
+
+
+          <% } %> 
       </ul>
   </div>
 
@@ -71,17 +104,40 @@
         <% if((user._id).toString()!=(locals.user._id).toString()){ %> 
         <li id="all_users_id_<%= user.id %>">
           <div class="list-content-wrapper">
-            <a href="/users/profile/<%= user.id %>" class="profile-btn"><%= user.name %></a>
-            <a href="" class="msg-add-friend" userIdValue="<%= user.id %>">
+            <a href="/users/profile/<%= user.id %>" class="profile-btn">
               
-              <% if(locals.user.sendedRequest.includes(user.id)){ %> 
-                <i class="fas fa-check"></i>
-              <% }else{ %>
-                <i class="fas fa-user-plus"></i>
-              <% } %> 
-
+              <div class="img-container">
+                <% if(user.avatar){ %>
+                <img src="<%= user.avatar %>" alt="">
+                <% }else{ %>
+                  <i class="fas fa-user"></i>
+                <% } %>  
+              </div>
+              
+              <%= user.name %>
             
             </a>
+            
+                <a href="" class="msg-add-friend" userIdValue="<%= user.id %>"
+
+                      <% if(locals.user.friendRequests.includes(user.id)){ %> 
+                      
+                        style="pointer-events:none";
+
+
+                    <% } %>
+                  
+                  >
+                  
+                  <% if(locals.user.sendedRequest.includes(user.id)){ %> 
+                    <i class="fas fa-check"></i>
+                  <% }else{ %>
+                    <i class="fas fa-user-plus"></i>
+                  <% } %> 
+
+                
+                </a>
+ 
           </div>
           <div class="side-list-border"></div>
         </li>
@@ -99,4 +155,104 @@
         <div class="welcome-text"><p>Click on chat button besides your friend's name</p></div>
       </div>
     </div>
+</div>
+<div class="modal fade create-group" id="CreategroupModal" tabindex="-1" aria-labelledby="groupModalArea" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <form class="modal-content" enctype="multipart/form-data" method="post" action="/groups/create">
+      <div class="modal-header">
+        <h5 class="modal-title" id="groupModalArea">Create Group</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body groupModalBody">
+        <div class="create-group-form">
+
+          <div class="group-details">
+            <div class="group-section-heading">group Details</div>
+              <div class="group-profile-pic"><input type="file" accept="image/*" name="groupPic"><img src='' alt=""></div>
+              <button type="button" id="pic-remove">remove pic</button>
+  
+              <div class="group-name">
+                  <p>Group Name</p>
+                  <input type="text" class="form-control" name="groupName">
+              </div>
+              <div class="group-desc">
+                  <p>Description</p>
+                  <input type="text" class="form-control" name="groupDesc">
+              </div>
+              <input type="hidden" name="admin" value="<%= locals.user.id %>">
+          </div>
+  
+  
+      </div>
+        <div class="create-group-select-users">
+          <div class="group-section-heading">Users</div>
+          <ul class="list-group">
+            <% for(let user of all_users){ %>
+              <% if(user._id.toString()!=locals.user._id.toString()){ %> 
+                <li class="list-group-item form-check" aria-current="true">
+
+                  <input type="checkbox" id="grp_user_<%= user.id %>" class="check_box" name="groupMembers" value="<%= user.id %>">
+                  <label class="form-check-label" for="grp_user_<%= user.id %>">
+                    
+                      <%= user.name %> 
+                    
+                  </label>
+                </li>
+              <% } %>
+            <% } %> 
+          </ul>
+
+
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Create Group</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="modal fade create-group" id="ShowGroupModal" tabindex="-1" aria-labelledby="showgroupModalArea" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="showgroupModalArea">Group Info</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body groupModalBody">
+        <div class="create-group-form">
+
+          <div class="group-details">
+            <div class="group-section-heading">group Details</div>
+              <div class="group-profile-pic"><img src='' alt=""></div>
+  
+              <div class="group-name">
+                  <p>Group Name</p>
+                  <input type="text" class="form-control" name="groupName" disabled>
+              </div>
+              <div class="group-desc">
+                  <p>Description</p>
+                  <input type="text" class="form-control" name="groupDesc" disabled>
+              </div>
+          </div>
+  
+  
+      </div>
+        <div class="create-group-select-users">
+          <div class="group-section-heading">Users</div>
+          <ul class="list-group">
+
+
+
+          </ul>
+
+
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
 </div>

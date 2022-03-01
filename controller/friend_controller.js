@@ -20,7 +20,8 @@ module.exports.toggle_friend=async function(req,res){
             return res.json(200,{
                 alreadyExists:alreadyExists,
                 friendName:friend.name,
-                friendshipId:friendship.id
+                friendshipId:friendship.id,
+                profile_pic:friend.avatar
             });
         }
     
@@ -51,13 +52,21 @@ module.exports.reject=async function(req,res){
 
 }
 module.exports.destroy=async function(req,res){
-    await Friends.findOneAndDelete({requestBy:{$in:[req.user.id,req.params.id]},requestTo:{$in:[req.user.id,req.params.id]}});
-
-    await User.findByIdAndUpdate(req.user.id,{$pull:{friends:req.params.id}});
-    await User.findByIdAndUpdate(req.params.id,{$pull:{friends:req.user.id}});
-    if(req.xhr){
-        return res.json('200',{
-            message:'deletion successful'
-        })
+    console.log('req.params.removedBy',req.params.removedBy);
+    console.log('req.params',req.user.id);
+    console.log(req.params.removedBy==req.user.id);
+    if(req.params.removedBy==req.user.id){
+        await Friends.findOneAndDelete({requestBy:{$in:[req.user.id,req.params.removedTo]},requestTo:{$in:[req.user.id,req.params.removedTo]}});
+        let removedUser=await User.findById(req.params.removedTo);
+        if(req.xhr){
+            return res.json('200',{
+                removedUserName:removedUser.name,
+                removedUserAvatar:removedUser.avatar,
+                removedUserId:removedUser.id
+            });
+        }
+    }else{
+        res.redirect('back');
     }
+
 }

@@ -16,7 +16,7 @@
 
         </button>
         <ul class="dropdown-menu" aria-labelledby="mini_btn">
-          <li><a class="dropdown-item" href="#">Find Buddies</a></li>
+          <li><a class="dropdown-item" href="/users/findFriends">Find Buddies</a></li>
         </ul>
       </div>
 
@@ -26,7 +26,7 @@
         
         <button type="button" id="notification_btn" class="btn btn-primary position-relative" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="fas fa-bell"></i>
-          <% if(locals.myProfile.friendRequests.length+locals.user.reqAcceptedNotif.length){ %>
+          <% if(locals.myProfile.friendRequests.length+locals.user.reqAcceptedNotif.length+locals.user.postLiked.length){ %>
 
           <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
             <span class="visually-hidden">New alerts</span>
@@ -40,10 +40,13 @@
             <li type="friend-request"><div class="dropdown-item request-drpdwn">
 
 
-             <div class="req-detail" userid="<%= friendreq._id %>">
-              <img src="" alt="">
+             <a class="req-detail" userid="<%= friendreq._id %>" href="/users/profile/<%= friendreq._id %>">
+              <div>
+                <img src="<%= friendreq.avatar %>" alt="">
+              </div>
+
               <p><%= friendreq.name %> </p>
-             </div>
+             </a>
              <div class="req-decision">
               <button decision="accept"><i class="far fa-check-circle fa-sm"></i></button>
               <button decision="reject"><i class="far fa-times-circle fa-sm"></i></button>
@@ -56,7 +59,7 @@
             
             <li type="other-notifs" notif_uid="<%=acceptedreq.id %>"><div class="dropdown-item other-notifs">
               <div class="req-detail">
-                  <p><a href=""><%=acceptedreq.name %></a> has accepted your friend request</p>
+                  <p><a href="/users/profile/<%= acceptedreq.id %>"><%=acceptedreq.name %></a> has accepted your friend request</p>
               </div>
               <div class="req-decision notif-close-btn">
                 <i class="fas fa-times"></i>
@@ -64,7 +67,22 @@
               </div>
             </li>
           <% } %> 
-          <% if(locals.myProfile.friendRequests.length+locals.user.reqAcceptedNotif.length){ %>
+          
+            <% for(let likenotif of locals.myProfile.postLiked){ %>
+              
+              <li type="other-notifs" notif_uid="<%= likenotif.userid %>" postid="<%= likenotif.assetId %>"><div class="dropdown-item other-notifs">
+                <div class="req-detail">
+                    <p><a href="/users/profile/<%= likenotif.userid %>"><%= likenotif.username %> </a> liked your <a href="#post-<%= likenotif.assetId %>">post</a></p>
+                </div>
+                <div class="req-decision notif-close-btn">
+                  <i class="fas fa-times"></i>
+                </div>
+              </li>
+            <% } %> 
+
+
+
+          <% if(locals.myProfile.friendRequests.length+locals.user.reqAcceptedNotif.length+locals.user.postLiked.length){ %>
             <li id="no_notifs" class="hidden">no notification</li>
           <% }else{ %>
             <li id="no_notifs">no notification</li>
@@ -75,11 +93,19 @@
       <div id="user-profile" class="dropdown header-btn">
       
         <button type="button" id="profile_btn" class="btn btn-primary position-relative" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="fas fa-user"></i>
+
+          <div class="img-container">
+            <% if(user.avatar){ %>
+            <img src="<%= user.avatar %>" alt="">
+            <% }else{ %>
+              <i class="fas fa-user"></i>
+            <% } %>  
+          </div>
+          <!-- <i class="fas fa-user"></i> -->
         </button>
         <ul class="dropdown-menu" aria-labelledby="profile_btn">
           <li><a class="dropdown-item" href="/users/signout">Sign Out    <i class="fas fa-sign-out-alt"></i></a></li>
-          <li><a class="dropdown-item" href="/users/profile/<%= locals.user.id %>">My Profile</a></li>
+          <li><a class="dropdown-item" href="/users/profile/<%= locals.user.id %>">My Profile(<%= locals.user.name %>)</a></li>
         </ul>
       </div>
 

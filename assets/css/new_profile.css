@@ -91,7 +91,7 @@
 #friends-count div:last-of-type, #post-count div:last-of-type {
   flex-grow: 1; }
 
-#edit-profile {
+#edit-profile, #remove-friend {
   justify-self: flex-start;
   align-self: flex-end;
   position: absolute;
@@ -101,5 +101,5 @@
   height: fit-content !important;
   width: fit-content !important;
   border: none !important; }
-  #edit-profile > a {
+  #edit-profile > a, #remove-friend > a {
     color: black; }

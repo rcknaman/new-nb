@@ -10,6 +10,14 @@ body {
   color: white;
   padding-top: 50px; }
 
+a {
+  text-decoration: none;
+  color: #6d3533;
+  transition: all .2s ease-in; }
+
+a:hover {
+  color: #0A58CA; }
+
 header {
   position: fixed;
   top: 0%;
@@ -83,8 +91,63 @@ input:focus {
   z-index: 2;
   border-radius: 50%; }
 
-#file-upload-button {
-  /* display: none !important; */ }
+.loader-wrapper {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  background-color: #7c7875;
+  opacity: .7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5; }
+
+.loader * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; }
+
+.loader {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+
+.loader span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  border: 2px solid #fff;
+  pointer-events: none;
+  animation: animate 5s linear infinite; }
+
+.loader span:nth-child(1) {
+  border-radius: 38% 62% 64% 36% / 43% 35% 65% 57%; }
+
+.loader span:nth-child(2) {
+  animation-direction: reverse;
+  border-radius: 41% 59% 40% 60% / 65% 66% 34% 35%; }
+
+.loader span:nth-child(3) {
+  animation-duration: 3s;
+  border-radius: 73% 27% 56% 44% / 57% 74% 26% 43%; }
+
+@keyframes animate {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+
+h2 {
+  color: #fff;
+  font-weight: 500;
+  font-family: consolas; }
 
 @media screen and (max-width: 450px) {
   #form-box {

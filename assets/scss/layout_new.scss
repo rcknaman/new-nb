@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    // border:1px solid black;
 }
 a{
     text-decoration: none;
@@ -29,7 +30,21 @@ header {
     margin-bottom: 5px;
     z-index: 3;
 }
-
+header .img-container{
+    height: 2.5rem !important;
+    width: 2.5rem !important;
+    background-color: #B92B27;
+    border: 1px solid #7e4442;
+    border-radius: 50%;
+    overflow: hidden;
+    transition: all ease-in-out .2s;
+}
+header .img-container:hover{
+    background-color: #851d1a;
+}
+header .img-container img{
+    height: 40px;
+}
 #logo-container {
     margin-left: 10px;
     height: 100%;
@@ -61,7 +76,7 @@ header {
 }
 .request-drpdwn,.other-notifs{
     display: flex;
-    height: 100%;
+    min-height: 100%;
     width: 100%;
     align-items: center;
     border-bottom: 1px solid #B92B27;
@@ -84,7 +99,7 @@ header {
 // }
 .req-detail{
     width: 80%;
-    height: 43px;
+    min-height: 43px;
     display: flex;
     
     align-items: center;
@@ -92,7 +107,7 @@ header {
     // flex-shrink: 1;
     position: relative;
     z-index: 1;
-    
+    color: rgb(104, 99, 99);
     transition: all .2s ease-in-out;
 }
 .request-drpdwn .req-detail{
@@ -100,8 +115,10 @@ header {
 }
 .req-detail:hover{
     background-color: #D9D9DB;
+    color: rgb(73, 70, 70);
 }
 .req-decision{
+    min-height: 40px;
     width: 20%;
     height: 100%;
     display: flex;
@@ -119,13 +136,21 @@ header {
     // flex-shrink: 1;
     // height: 100%;
 }
+.req-detail>div{
+    background-color: black;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .req-detail img{
     // position: absolute;
     // left: 0%;
     height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    margin-right: 3px;
+
 }
 .req-decision{
     font-size: 1rem !important;
@@ -169,7 +194,7 @@ header {
 .header-btn li{
     // position: fixed !important;
     z-index: 3 !important;
-    height: 50px;
+    min-height: 50px;
 
 }
 .dropdown-item:active {
@@ -223,7 +248,6 @@ header {
     padding: 5px;
     z-index: 2;
 }
-
 #left {
     left: 10px;
     border-right: 1px solid #D9D9DB;
@@ -248,6 +272,11 @@ header {
     z-index: 2;
     align-items: center;
     
+}
+.side-list-sub-container li .profile-btn p{
+    // background-color: red;
+    right: 0;
+    margin: 0;
 }
 .side-list-sub-container:nth-last-of-type(2n){
     border-bottom: 1px solid #D9D9DB;
@@ -300,18 +329,37 @@ header {
 .list-content-wrapper>a{
     text-decoration: none;
 }
+.img-container{
+    height: 2rem;
+    width: 2rem;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    margin-right: 3px;
+}
+.side-list-container .img-container{
+    background-color: black;
+}
+.img-container img{
+    width: 32px;
+}
+
 .profile-btn{
 
     height: 100%;
     width: 100%;
-    text-align: center;
+    text-align: end;
     align-self: flex-start;
     border-bottom-left-radius: 10px;
     border-top-left-radius: 10px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
     transition: all ease-in-out .2s ;
+    cursor: pointer;
+    user-select: none;
 }
 .profile-btn:hover{
     background-color: #93939b;
@@ -324,7 +372,8 @@ header {
     align-items: center;
     border-left: 1px solid gray;
     border-top-right-radius: 10px;
-    
+    cursor: pointer;
+
 }
 .msg-add-friend .notification-badge{
     padding:4px !important;
@@ -508,3 +557,181 @@ header {
 .minimize-chat-body{
     display: none;
 }
+
+.loader-wrapper{
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    background-color: rgb(124, 120, 117);
+    opacity: .7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+}
+
+.loader * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.loader {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.loader span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    border: 2px solid #fff;
+    pointer-events: none;
+    animation: animate 5s linear infinite;
+}
+.loader span:nth-child(1) {
+    border-radius: 38% 62% 64% 36% / 43% 35% 65% 57%;
+}
+.loader span:nth-child(2) {
+    animation-direction: reverse;
+    border-radius: 41% 59% 40% 60% / 65% 66% 34% 35%;
+}
+.loader span:nth-child(3) {
+    animation-duration: 3s;
+    border-radius: 73% 27% 56% 44% / 57% 74% 26% 43%;
+}
+#groups {
+    border: 1px solid red;
+    // margin: 0;
+}
+
+
+
+
+#group-heading p{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+#new-group{
+    transition: all .2s ease-in;
+    cursor: pointer;
+    justify-self: flex-end;
+    position: absolute;
+    right: 3px;
+}
+#new-group:hover{
+    background-color: #D9D9DB;
+}
+.create-group-form{
+    height: fit-content;
+    width: 400px;
+}
+.groupModalBody{
+    display: flex;
+}
+.groupModalBody>div{
+    width: 50%;
+    height: 100%;
+}
+.group-profile-pic{
+    position: relative;
+    height: 150px;
+    width: 150px;
+    z-index: 2;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: black;
+    // border: 1px solid black;
+}
+.group-profile-pic:hover{
+    box-shadow: 0 0 10px 10px rgb(219, 218, 218);
+}
+.group-profile-pic img{
+    position: absolute;
+    top: 0%;
+    height: 100%;
+    width: 100%;
+}
+.group-profile-pic input{
+    background-color: black;
+    position: absolute;
+    top: 0%;
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    opacity: 0;
+    z-index: 2;
+    border-radius: 50%;
+}
+.group-details{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100%;
+    border-right: 1px solid #000;
+}
+.group-name,.group-desc{
+    width: 100%;
+}
+.group-name input,.group-desc input{
+    width: 70% !important;
+}
+.create-group-select-users ul{
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    padding-bottom: 30px;
+}
+.create-group-select-users ul::-webkit-scrollbar{
+    display: none;
+}
+.create-group-select-users{
+    overflow: hidden;
+}
+.group-section-heading{
+    display: flex;
+    justify-content: center;
+}
+.create-group-select-users li{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 !important;
+    min-height: 50px;
+}
+.check_box{
+    position: absolute;
+    left: 5px;
+}
+
+
+
+
+
+@keyframes animate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+h2 {
+    color: #fff;
+    font-weight: 500;
+    font-family: consolas;
+}
+
+
+

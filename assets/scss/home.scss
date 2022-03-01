@@ -564,7 +564,17 @@ audio::-webkit-media-controls-panel{
     margin-right: 10px;
 }
 
-
+.post .img-container{
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border: 1px solid black;
+    background-color: black;
+    overflow: hidden;
+}
+.post .img-container img{
+    height: 40px;
+}
 // 
 
 
@@ -779,6 +789,9 @@ audio::-webkit-media-controls-panel{
     justify-items: center;
     align-items: center;
 }
+
+
+
  @-webkit-keyframes tracking-in-expand {
     0% {
       letter-spacing: -0.5em;

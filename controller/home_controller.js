@@ -3,6 +3,7 @@ const User=require('../models/user');
 const Chatroom=require('../models/chatRoom');
 const Message=require('../models/message');
 const Friends=require('../models/friends');
+const Groups=require('../models/group');
 module.exports.home = async function (req, res) {
 
     //this piece of code will not work if we want to display the author of the posts as well along with
@@ -32,9 +33,6 @@ module.exports.home = async function (req, res) {
             path:'likes',
             select:'user reaction'
         })
-        if(req.user){
-            await req.user.populate({path:'friends'});
-        }
     
     let myProfile;
 
@@ -47,7 +45,7 @@ module.exports.home = async function (req, res) {
     })
     .populate({
         path:'friendRequests',
-        select:'name'
+        select:'name avatar'
     })
     .populate({
         path:'sendedRequest',
@@ -62,21 +60,21 @@ module.exports.home = async function (req, res) {
     
     .populate({
         path:'requestBy',
-        select:'name'
+        select:'name avatar'
     })
     .populate({
         path:'requestTo',
-        select:'name'
+        select:'name avatar'
     });
     let userFriends2=await Friends.find({requestTo:{$in:[req.user.id]}})
 
     .populate({
         path:'requestBy',
-        select:'name'
+        select:'name avatar'
     })
     .populate({
         path:'requestTo',
-        select:'name'
+        select:'name avatar'
     });
     
     let userFriends=userFriends1.concat(userFriends2);
@@ -108,6 +106,8 @@ module.exports.home = async function (req, res) {
         }
     }
     let user=await User.find({_id:{$nin:userfriendId}});
+    let groups=await Groups.find({$or:[{users:req.user.id},{admin:req.user.id}]});
+    console.log('groups',groups);
     return res.render('new_home', {
         title: 'Codial',
         posts: post_data,
@@ -115,7 +115,8 @@ module.exports.home = async function (req, res) {
         userFriends:userFriends,
         myProfile:myProfile,
         newMsgCheck:newMsgCheck,
-        userfriendId:userfriendId
+        userfriendId:userfriendId,
+        groups:groups
     });
 
 

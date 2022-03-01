@@ -11,11 +11,20 @@
     <title>Document</title>
 </head>
 <body>
+
+  <div class="loader-wrapper">
+
+    <div class="loader">
+      <span></span>
+      <span></span>
+      <span></span>
+      <h2><i class="fas fa-praying-hands faa-falling faa-reverse"></i></h2>
+  </div></div>
     <header>
 
         <a onclick="history.back()"><i class="fas fa-chevron-left"></i></a>
         <p>friends & group</p>
-        <p><a href=""><i class="fas fa-users"></i> +</a></p>
+        <p><a href="/groups/createGroupPage"><i class="fas fa-users"></i> +</a></p>
     </header>
     <main>
 
@@ -57,6 +66,27 @@
             </div>
             <% friendIndex++; %> 
           <% } %> 
+        <% for(let group of groups){ %> 
+
+
+            <div id="groupId-<%= group.id %>">
+              <div class="list-content-wrapper">
+                <a class="profile-btn">
+                    <div class="img-container">
+
+                      <img src="<%= group.groupPic %>" alt="">
+                    </div>
+                    
+                    <%= group.name %>
+                </a>
+                <a class="msg-add-friend initiate-msg" href="">
+                  <i class="fas fa-comment-dots"></i>
+                </a>
+              </div>
+              <div class="side-list-border"></div>
+            </div>
+            <% friendIndex++; %> 
+          <% } %> 
 
     </main>
 
@@ -76,6 +106,13 @@
       </script>
     <% } %> 
 
-
+    <script>
+      $(window).on('load',function(){
+        $('.loader-wrapper').fadeOut('slow');
+        // $('.loader').fadeOut('slow');
+      })
+    
+    
+    </script>
 </body>
 </html>

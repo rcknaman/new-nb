@@ -22,28 +22,181 @@ class chatEngine{
 
         let self=this;
         let flag=1;//flag for handling nested click event here in 'initialchat'
+
+        let groupInfo=function(){
+
+            $(document).on('click','.profile-btn',function(e){
+
+                
+
+                if($(this).attr('type')=='group'){
+
+                    let groupId=$(this).parent().parent().attr('groupid');
+                    let admin=$(this).attr('admin');
+                    $('#CreategroupModal form').attr('action',`/groups/update/${groupId}`);
+                    $.ajax({
+                        type:'get',
+                        url:`/groups/info/${groupId}`,
+                        success:function(data){
+
+                            if(admin.toString()==self.userId.toString()){
+
+                                let groupMembersDom=`
+                                
+                                <li class="list-group-item" aria-current="true">
+
+                                    <p>
+                                        ${data.data.group.admin.name}(admin)(You)
+                                    </p>
+                                </li>`;
+
+
+                                for(let user of data.data.group.users){
+
+
+                                    if(user._id.toString()!=self.userId.toString()){
+
+                                        groupMembersDom+=
+
+                                        `
+                                        <li class="list-group-item form-check" aria-current="true">
+
+                                            <input type="checkbox" id="grp_user_${user._id}" class="check_box" name="groupMembers" value="${user._id}" checked>
+                                            <label class="form-check-label" for="grp_user_${user._id}">
+                                            
+                                                ${user.name}
+                                            
+                                            </label>
+                                        </li>
+                                        
+                                        `
+
+                                    }
+
+
+                                }
+                                for(let restuser of data.data.restUsers){
+
+                                    groupMembersDom+=
+
+                                    `
+                                    <li class="list-group-item form-check" aria-current="true">
+
+                                        <input type="checkbox" id="grp_user_${restuser._id}" class="check_box" name="groupMembers" value="${restuser.id}">
+                                        <label class="form-check-label" for="grp_user_${restuser.id}">
+                                        
+                                            ${restuser.name}
+                                        
+                                        </label>
+                                    </li>
+                                    
+                                    `
+
+
+
+
+                                }
+                                $('#CreategroupModal .list-group').html(`
+                                
+                                    ${groupMembersDom}
+                                `);
+                                console.log('group: ',data.data.group.description);
+                                $('#CreategroupModal .group-name input').val(data.data.group.name);
+                                console.log($('#CreategroupModal .group-desc input'));
+                                $('#CreategroupModal .group-desc input').val(data.data.group.description);
+                                $('#CreategroupModal .group-profile-pic img').attr('src',data.data.group.groupPic);
+                                $('#CreategroupModal .create-group-form .group-section-heading').html('group Details(please upload group again!)');
+                                $('#groupModalArea').html('Edit Group')
+                                
+
+
+                            }else{
+
+                                let groupMembersDom=`
+                                
+                                <li class="list-group-item" aria-current="true">
+
+                                    <p>
+                                        ${data.data.group.admin.name}(admin)
+                                    </p>
+                                </li>
+                                `;
+                                for(let user of data.data.group.users){
+
+
+                                    if(user._id.toString()==self.userId.toString()){
+
+                                        groupMembersDom+=
+
+                                        `
+                                        <li class="list-group-item" aria-current="true">
+    
+                                            <p>
+                                                ${user.name}(You)
+                                            </p>
+                                        </li>
+                                        
+                                        `
+
+                                    }else{
+
+
+                                        groupMembersDom+=
+
+                                        `
+                                        <li class="list-group-item" aria-current="true">
+    
+                                            <p>
+                                                ${user.name}
+                                            </p>
+                                        </li>
+                                        
+                                        `
+
+                                    }
+
+
+                                }
+
+                                $('#ShowGroupModal .list-group').html(`
+                                
+                                    ${groupMembersDom}
+                                `);
+                                console.log('group: ',data.data.group.description);
+                                $('#ShowGroupModal .group-name input').val(data.data.group.name);
+                                console.log($('#ShowGroupModal .group-desc input'));
+                                $('#ShowGroupModal .group-desc input').attr('value',data.data.group.description);
+                                $('#ShowGroupModal .group-profile-pic img').attr('src',data.data.group.groupPic);
+                                
+
+                            }
+                        }
+                    });
+
+                }
+
+
+
+
+            });
+
+
+        }
+
+
+
         let initiateChat = function (self,friendId) {
             console.log('initiate chat');
             let chatHeader = $('#chat-container>div').first();
-            $(document).on('click',`#friends li[friendId="${friendId}"] .initiate-msg`,function (e) {
-    
+
+            function helper(curr,btn_source){
+
 
                 if($(window).width()>890){
 
 
 
 
-                    e.preventDefault();
-                    $(' .notification-badge',$(this)).remove();
-                    $(chatHeader).css({
-                        'background-color': '#0A58CA',
-                        'color': "white"
-                    });
-                    $(' p', chatHeader).css('left', '10px');
-                    let userName = $(' .profile-btn', $(this).parent()).text()+' '+'<i class="fas fa-angle-down"></i>';
-                    $(' p', chatHeader).fadeOut(200, function () {
-                        $(this).html(userName).fadeIn(500);
-                    });
                     // console.log(`$('#chat-container').attr('friendId'): `,!$('#chat-container').attr('friendId'));
                     if(!$('#chat-container').attr('friendId') || $('#chat-container').attr('friendId').toString()!=friendId.toString()){
     
@@ -54,65 +207,97 @@ class chatEngine{
                             success:function(data){
                                 console.log('entered again 20e',friendId);
                                 let messageDom=``;
-    
-                                for(let message of data.data.messages){
-    
-                                    if(message.sentBy._id.toString()==self.userId.toString()){
-                                        messageDom+=`
-                                        
-                                        <li class="self-msg">
-                                            <div class="username"><p>You</p></div>
-                                            <div class="msg-content"><p>${message.message}</p></div>
-                                        </li>
-                                        
-                                        
-                                        `
+                                if(data.data.isValid){
+
+                                    $(' .notification-badge',$(this)).remove();
+                                    $(chatHeader).css({
+                                        'background-color': '#0A58CA',
+                                        'color': "white"
+                                    });
+                                    $(' p', chatHeader).css('left', '10px');
+                                    let username;
+                                    console.log('btn_source: ',btn_source=='sideBarMsgBtn');
+                                    if(btn_source=='sideBarMsgBtn'){
+                                        username=$(' .profile-btn', $(curr).parent()).text();
+                                        console.log($(' .profile-btn', $(curr).parent()).text());
+                                    }else{
+                                        username=$(curr).attr('username');
+                
                                     }
-                                    else{
-                                        messageDom+=`
-                                        
-                                        <li class="user-msg">
-                                            <div class="username"><p>${message.sentBy.name}</p></div>
-                                            <div class="msg-content"><p>${message.message}</p></div>
-                                        </li>               
-                                        `
-                                    }
+                                    let userName = username+' '+'<i class="fas fa-angle-down"></i>';
+                                    $(' p', chatHeader).fadeOut(200, function () {
+                                        $(this).html(userName).fadeIn(500);
+                                    });
+
+
+
+
+
+                                    for(let message of data.data.messages){
     
-    
-                                }
-    
-    
-                                $('#chat-container .chats-container').html(
+                                        if(message.sentBy._id.toString()==self.userId.toString()){
+                                            messageDom+=`
+                                            
+                                            <li class="self-msg">
+                                                <div class="username"><p>You</p></div>
+                                                <div class="msg-content"><p>${message.message}</p></div>
+                                            </li>
+                                            
+                                            
+                                            `
+                                        }
+                                        else{
+                                            messageDom+=`
+                                            
+                                            <li class="user-msg">
+                                                <div class="username"><p>${message.sentBy.name}</p></div>
+                                                <div class="msg-content"><p>${message.message}</p></div>
+                                            </li>               
+                                            `
+                                        }
         
-                                    `<ul id="chats">`
-    
-                                    +messageDom+
-    
-    
-    
-                                    `</ul>
-                                    <a href="#last-msg" style="display:none;"></a>
-                                    <form id="create-msg" method="post" action='/message/create'>
-                                        <div id="input-msg"><input type="text" placeholder="text here..."  name="message"></div>
-                                        <input name="sentTo" type="hidden" value="${friendId}">
+        
+                                    }
+
+                                    $('#chat-container .chats-container').html(
+        
+                                        `<ul id="chats">`
+        
+                                        +messageDom+
+        
+        
+        
+                                        `</ul>
+                                        <a href="#last-msg" style="display:none;"></a>
+                                        <form id="create-msg" method="post" action='/message/create'>
+                                            <div id="input-msg"><input type="text" placeholder="text here..."  name="message"></div>
+                                            <input name="sentTo" type="hidden" value="${friendId}">
+                                            
+                                            <div id="send-msg"><button type="submit"><i class="fas fa-angle-double-right"></i></button></div>
+                                        </form>`
+                        
+                        
+                                    )
+        
+                                    $('#chats li').last().attr('id','last-msg');
+        
+                                                        
+                                    function scrollToBottom(){
+                                        const messages = document.getElementById('chats');
+                                        const messagesid = document.getElementById('last-msg');
+                                        if(messagesid){
+                                            messages.scrollTop = messagesid.offsetTop;
+                                        }
                                         
-                                        <div id="send-msg"><button type="submit"><i class="fas fa-angle-double-right"></i></button></div>
-                                    </form>`
-                    
-                    
-                                )
-    
-                                $('#chats li').last().attr('id','last-msg');
-    
-                                                    
-                                function scrollToBottom(){
-                                    const messages = document.getElementById('chats');
-                                    const messagesid = document.getElementById('last-msg');  
-                                    messages.scrollTop = messagesid.offsetTop;
+                                    }
+                                    
+                                    scrollToBottom();
+
+
+
+                                }else{
+                                    window.location.href = "/";
                                 }
-                                
-                                scrollToBottom();
-    
                             }
     
                         });
@@ -144,25 +329,41 @@ class chatEngine{
 
 
                 }
+    
+            }
 
 
+            $(document).on('click',`#friends li[friendId="${friendId}"] .initiate-msg`,function (e) {
 
+                helper(this,'sideBarMsgBtn');
+            });
+            $(document).on('click',`.sendMsg button`,function (e) {
+
+                helper(this,'profileMsgBtn');
 
             });
 
         }
 
-        let deleteNotif=function(){
-            $('.notif-close-btn').on('click',function(e){
+        let deleteNotif=function(notificationType){
+            $(document).on('click','.notif-close-btn',function(e){
 
                 
                 console.log($(this).parent().parent());
                 let notif_self=this;
-                console.log('$(this).parent().parent().attr("notif_uid"): ',$(this).parent().parent().attr('notif_uid'));
+                console.log('$(this).parent().parent().attr("notif_uid"): ',);
+                let notif_id=$(this).parent().parent().attr('notif_uid');
+                let postid=$(this).parent().parent().attr('postid');
+                let url;
+                if(notificationType=='reqAccepted'){
+                    url=`/users/delete-notifs/${notif_id}/${notificationType}/null`;
+                }else if(!!postid){
+                    url=`/users/delete-notifs/${notif_id}/${notificationType}/${postid}`;
+                }
                 $.ajax({
 
                     type:'get',
-                    url:`/users/delete-notifs/${$(this).parent().parent().attr('notif_uid')}`,
+                    url:url,
                     success:function(data){
                         console.log($(notif_self).parent().parent());
                         $(notif_self).parent().parent().remove();
@@ -172,6 +373,61 @@ class chatEngine{
                     }
                 })
             });
+        }
+        let removeFriend=function(){
+            console.log($('#remove-friend'));
+            // console.log($(`#friends li[friendid="${removedTo}"]`))   
+            $(document).on('click','#remove-friend',function(e){
+                e.preventDefault();
+                $.ajax({
+
+                    type:'get',
+                    url:$(' a',$(this)).attr('href'),
+                    success:function(data){
+                        let avatarDom;
+                        if(data.removedUserAvatar){
+                            avatarDom=`<img src="${data.removedUserAvatar}>" alt="">`
+                        }else{
+                            avatarDom=`<i class="fas fa-user"></i>`
+                        }
+                        self.socket.emit('friend removed',{removedBy:self.userId,removedTo:data.removedUserId});
+                        $('#remove-friend').remove();
+                        $(`#friends li[friendid="${data.removedUserId}"]`).remove();
+
+
+                        $('#users').prepend(`
+                        
+                            <li id="all_users_id_${data.removedUserId}">
+                                <div class="list-content-wrapper">
+                                <a href="/users/profile/${data.removedUserId}" class="profile-btn">
+                                    
+                                    <div class="img-container">
+                                    ${avatarDom}
+                                    </div>
+                                    
+                                    ${data.removedUserName}
+                                
+                                </a>
+                                <a href="" class="msg-add-friend" userIdValue="${data.removedUserId}">
+                                <i class="fas fa-user-plus"></i>
+                                </a>
+                                </div>
+                                <div class="side-list-border"></div>
+                            </li>
+                        `)
+                        let friendCount=$('#friends-count div').last().html();
+                        console.log(typeof(friendCount));
+                        $('#friends-count div').last().html(+friendCount -1);
+                        $('#add-friend').attr('class','toggleFriendReq');
+                        $('#add-friend button').html('Add friend');
+                        $('#create-msg')
+                    }
+    
+                })
+            });
+
+
+
         }
         let acceptRejectBtn=function(){
 
@@ -193,7 +449,7 @@ class chatEngine{
                         url:`/users/friends/toggle/${fromUserId}`,
                         success:function(data){
                             console.log('sucess:' ,data);
-                            $(`div[userid="${fromUserId}"].req-detail`).parent().parent().remove();
+                            $(`a[userid="${fromUserId}"].req-detail`).parent().parent().remove();
                             $(`#all_users_id_${fromUserId}`).remove();
                             $('#add-friend').html(`
                             
@@ -204,17 +460,33 @@ class chatEngine{
                             $('#add-friend').attr('class','sendMsg');
 
                             if(!data.alreadyExists){
+                                let profilePic;
+                                if(data.profile_pic){
+                                    profilePic=`<img src="${data.profile_pic}" alt="">`
+                                }else{
+                                    profilePic='<i class="fas fa-user"></i>'
+                                }
                                 $('#friends').prepend(`
                             
                                 <li friendId="${fromUserId}" friendshipId="${data.friendshipId}">
                                     <div class="list-content-wrapper">
-                                        <a href="" class="profile-btn">${data.friendName}</a>
+                                        <a href="/users/profile/${fromUserId}" class="profile-btn">
+                                        
+                                        
+                                        <div class="img-container">
+                                        ${profilePic}
+                                        </div>
+                                        
+                                        
+                                        
+                                        ${data.friendName}</a>
                                         <a class="msg-add-friend initiate-msg"><i class="fas fa-comment-dots"></i></a>
                                     </div>
                                     <div class="side-list-border"></div>
                                 </li>
         
                                 `);
+                                $('#profile-stats').append(`<div id="remove-friend" profileid="${fromUserId}"><a href="/users/friends/remove-friend/${fromUserId}/${self.userId}"><i class="fas fa-user-minus"></i></a></div>`)
                                 initiateChat(self,fromUserId);
                                 self.socket.emit('friend_request_accepted',{
                                     fromUserId:fromUserId,
@@ -246,9 +518,9 @@ class chatEngine{
                                 fromUserId:fromUserId,
                                 toUserId:self.userId
                             });
-                            $(`a[useridvalue='${fromUserId}']`).css('pointer-events','none');
+                            $(`a[useridvalue='${fromUserId}']`).css('pointer-events','');
 
-                            $(`div[userid="${fromUserId}"].req-detail`).parent().parent().remove();
+                            $(`a[userid="${fromUserId}"].req-detail`).parent().parent().remove();
 
                             $('#add-friend').html(`
                             
@@ -293,29 +565,35 @@ class chatEngine{
                     url:'/message/create',
                     data:$(this).serialize(),
                     success:function(data){
-                        console.log('repeat');
-                        console.log('data: ',data);
-                        $('#chats').append(
+                        console.log(data.data);
+                        if(data.data.valid){
+                            console.log('repeat');
+                            console.log('data: ',data);
+                            $('#chats').append(
+    
+                                `
+                                
+                                <li class="self-msg">
+                                    <div class="username"><p>You</p></div>
+                                    <div class="msg-content"><p>${data.data.message}</p></div>
+                                </li>
+                                
+                                
+                                `);
+                            $(document).ready(function(){
+                                $('#input-msg input').val('');
+                            });
+    
+                            self.socket.emit('message stored in db',{
+                                sentBy:data.data.sentBy,
+                                sentTo:data.data.sentTo,
+                                message:data.data.message,
+                                messageId:data.data.messageId
+                            });
+                        }else{
+                            window.location.href = "/";
+                        }
 
-                            `
-                            
-                            <li class="self-msg">
-                                <div class="username"><p>You</p></div>
-                                <div class="msg-content"><p>${data.data.message}</p></div>
-                            </li>
-                            
-                            
-                            `);
-                        $(document).ready(function(){
-                            $('#input-msg input').val('');
-                        });
-
-                        self.socket.emit('message stored in db',{
-                            sentBy:data.data.sentBy,
-                            sentTo:data.data.sentTo,
-                            message:data.data.message,
-                            messageId:data.data.messageId
-                        });
 
 
                     }
@@ -363,6 +641,63 @@ class chatEngine{
 
 
             });
+
+
+            $(document).on('click','#new-group',function(){
+                $.ajax({
+    
+                    type:'get',
+                    url:'/groups/allUsers',
+                    success:function(data){
+    
+                        let groupMembersDom=``;
+                        $(`#CreategroupModal form`).attr('action','/groups/create');
+                        for(let user of data.allUsers){
+                            if(user._id.toString()!=self.userId.toString()){
+
+                                groupMembersDom+=`
+                            
+                            
+                                <li class="list-group-item form-check" aria-current="true">
+        
+                                    <input type="checkbox" id="grp_user_${user._id}" class="check_box" name="groupMembers" value="${user._id}">
+                                    <label class="form-check-label" for="grp_user_${user._id}">
+                                    
+                                        ${user.name}
+                                    
+                                    </label>
+                                </li>
+                                
+                                
+                                `
+
+
+
+                            }
+
+                        }
+                        console.log('data.allUsers',data.allUsers);
+                        $('#CreategroupModal .list-group').html(groupMembersDom);
+                        $('#CreategroupModal .create-group-form .group-section-heading').html('group Details');
+                    }
+                });
+            });
+
+            $(document).on('submit','#CreategroupModal form',function(e){
+
+                var selected = [];
+                $('#CreategroupModal .list-group input:checked').each(function() {
+                    console.log($(this).attr('value'));
+                    selected.push($(this).attr('value'));
+                });
+                let groupName=$('.group-name input').val();
+                let admin=$(`#CreategroupModal input[name="admin"]`).val();
+                self.socket.emit('new group created',{
+                    members:selected,
+                    groupName:groupName,
+                    admin:admin
+                });
+            });
             // when the request is recieved by end user
             self.socket.on('universal room joined',function(data){
 
@@ -370,6 +705,34 @@ class chatEngine{
                 for(let friend of data.userfriendId){
                     initiateChat(self,friend);
                 }
+
+            });
+            self.socket.on('added to a group',function(data){
+
+                console.log('added to a group',data.groupName);
+
+                $('#notification-bell ul').append(`
+                
+                                
+                <li type="group-notifs"><div class="dropdown-item other-notifs">
+                    <div class="req-detail">
+                        <p>you have been added to a group ${data.groupName} by <a href="/users/profile/${data.adminId}">${data.adminName}</a> click <a href="/">here</a> to see changes
+                        </p>
+                    </div>
+                    <div class="req-decision notif-close-btn">
+                            <i class="fas fa-times"></i>
+                    </div>
+       
+                </li>
+                
+                
+                `)
+                $(document).on('click','#notification-bell ul li .notif-close-btn',function(e){
+                    if($(this).parent().attr('type')=='group-notifs'){
+                        $(this).parent().remove();
+                    }
+                })
+
 
             });
             self.socket.on('friend_request_recieved',function(data){
@@ -384,10 +747,13 @@ class chatEngine{
                 <li type="friend-request"><div class="dropdown-item request-drpdwn">
 
 
-                <div class="req-detail" userid="${data.fromUser}">
-                <img src="" alt="">
-                <p>${data.username}</p>
+                <a class="req-detail" userid="${data.fromUser}" href="/users/profile/${data.fromUser}">
+                <div>
+                    <img src="${data.profile_pic}" alt="">
                 </div>
+                
+                <p>${data.username}</p>
+                </a>
                 <div class="req-decision">
                 <button decision="accept"><i class="far fa-check-circle fa-sm"></i></button>
                 <button decision="reject"><i class="far fa-times-circle fa-sm"></i></button>
@@ -435,7 +801,7 @@ class chatEngine{
             self.socket.on('friend_request_cancelled_reciever',function(data){
 
 
-                $(`div[userid="${data.fromUser}"].req-detail`).parent().parent().remove();
+                $(`a[userid="${data.fromUser}"].req-detail`).parent().parent().remove();
                 $('#notification_btn .notification-badge').remove();
                 if($('#notification-bell li').length==1){
                     $('#no_notifs').prop('class','');
@@ -469,16 +835,28 @@ class chatEngine{
                 console.log('this: ',this);
                 console.log('data.toUserId: ',data.toUser);
                 $(`#all_users_id_${data.toUser}`).remove();
-
+                let profilePic;
+                if(data.profile_pic){
+                    profilePic=`<img src="${data.profile_pic}" alt="">`
+                }else{
+                    profilePic='<i class="fas fa-user"></i>'
+                }
                 $('#friends').prepend(`
                             
-                <li friendId="${data.toUser} friendshipId="${data.friendshipId}">
+                <li friendId="${data.toUser}" friendshipId="${data.friendshipId}">
                     <div class="list-content-wrapper">
-                        <a href="" class="profile-btn">${data.toUserName}</a>
+                        <a href="/users/profile/${data.toUser}" class="profile-btn">
+                        
+                        <div class="img-container">
+                            ${profilePic}
+                        </div>
+                        
+                        ${data.toUserName}</a>
                         <a class="msg-add-friend initiate-msg"><i class="fas fa-comment-dots"></i></a>
                     </div>
                     <div class="side-list-border"></div>
                 </li>
+                                        
 
                 `);
                 $('#notification-bell button').append(`
@@ -492,14 +870,15 @@ class chatEngine{
                 
                     <li type="other-notifs" notif_uid="${data.toUser}"><div class="dropdown-item other-notifs">
                         <div class="req-detail">
-                            <p><a href="">${data.toUserName}</a> has accepted your friend request</p>
+                            <p><a href="/users/profile/${data.toUser}">${data.toUserName}</a> has accepted your friend request</p>
                         </div>
                         <div class="req-decision notif-close-btn">
                                  <i class="fas fa-times"></i>
                         </div>
-                        </div>
+               
                     </li>
                 `);
+                $('#profile-stats').append(`<div id="remove-friend" profileid="${data.toUser}"><a href="/users/friends/remove-friend/${data.toUser}/${self.userId}"><i class="fas fa-user-minus"></i></a></div>`)
                 let friendCount=$('#friends-count div').last().html();
                 $('#friends-count div').last().html(+friendCount +1);
                 $('#add-friend').attr('class','sendMsg');
@@ -510,8 +889,7 @@ class chatEngine{
                 `);
 
 
-                deleteNotif();
-                
+                deleteNotif('reqAccepted');
                 $('#no_notifs').prop('class','hidden');
                 initiateChat(self,data.toUser);
                 $('#add-friend').html(`
@@ -533,6 +911,25 @@ class chatEngine{
                 `);       
                 $('#add-friend').attr('class','toggleFriendReq');       
             });
+            self.socket.on('friend removed',function(data){
+                console.log('friend removed');
+
+                $('#remove-friend').remove();
+                $(`#friends li[friendId="${removedTo}"]`).remove();
+                $('#add-friend').attr('class','toggleFriendReq');
+                $('#add-friend').html(`
+                    <button  userIdValue="${data.removedBy}">
+                    Add friend
+                    </button>
+                `)
+                let friendCount=$('#friends-count div').last().html();
+                console.log(typeof(friendCount));
+                $('#friends-count div').last().html(+friendCount -1);
+                $('#add-friend').attr('class','toggleFriendReq')
+
+            });
+
+
             self.socket.on('new message recieved',function(data){
                 
                 $(`#friends li[friendid=${data.sentBy}] .msg-add-friend`).append(
@@ -572,11 +969,68 @@ class chatEngine{
 
 
             });
-            deleteNotif();
+            self.socket.on('someone liked your post',function(data){
+                console.log('someone liked your post');
+                $('#notification-bell button').append(`
+
+                <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
+                    <span class="visually-hidden">New alerts</span>
+                </span>
+                `);
+                $('#notification-bell ul').prepend(`
+                
+                
+                    <li type="other-notifs" notif_uid="${data.likedBy}" postid="${data.postid}"><div class="dropdown-item other-notifs">
+                        <div class="req-detail">
+                            <p><a href="/users/profile/${data.likedBy}">${data.likedByName}</a> liked your <a href="#post-${data.assetId}">post</a></p>
+                        </div>
+                        <div class="req-decision notif-close-btn">
+                                 <i class="fas fa-times"></i>
+                        </div>
+                    </li>
+                `);
+
+                deleteNotif('post_liked');
+                
+                $('#no_notifs').prop('class','hidden');
+
+
+            });
+            deleteNotif('reqAccepted');
+            deleteNotif('post_liked');
             acceptRejectBtn();
+            removeFriend();
+            groupInfo();
             $('#notification_btn').click(function(e){
                 $('#notification_btn .notification-badge').remove();
-            })
+            });
+
+            let postList=$('.post');
+            for(let post of postList){
+                let like_btn=$(' .like-btn',$(post));
+                console.log(like_btn);
+                let flag=1;
+                $(like_btn).on('click',function(e){
+                    if(flag==1){
+                        $(document).on('click','.popover-body>div',function(e){
+                            if($(this).attr('id')!='unlike'){
+                                self.socket.emit('post liked by user',{
+                                    likedBy:self.userId,
+                                    assetId:$(postList).attr('id').slice(5)
+                                });
+                            }
+
+                        });
+                        flag=0;
+                    }
+
+                });
+
+
+            }
+
+
+
         });
 
         

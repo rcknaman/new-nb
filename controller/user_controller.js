@@ -6,6 +6,7 @@ const Friends=require('../models/friends');
 const crypyo=require('crypto');
 const Message=require('../models/message');
 let Posts=require('../models/post');
+let Groups=require('../models/group');
 const UpdatePasswordTokenMailer=require('../mailer/update_password_link');
 
 const accessTokenModel=require('../models/accessToken_modal');
@@ -107,6 +108,8 @@ module.exports.profile=async function(req,res){
         path:'likes',
         select:'user reaction'
     });
+    let groups=await Groups.find({$or:[{users:req.user.id},{admin:req.user.id}]});
+    console.log('userctrl friedn',!!isFriend);
     return res.render('new_profile', {
         title: 'codial|profile page',
         all_users:Alluser,
@@ -118,7 +121,8 @@ module.exports.profile=async function(req,res){
         profileDetails:profileDetails,
         postsCount:posts.length,
         posts:posts,
-        isFriend:isFriend
+        isFriend:!!isFriend,
+        groups:groups
     });
 
 }
@@ -153,7 +157,13 @@ module.exports.fetchNotifs=async function(req,res){
 }
 module.exports.deleteNotifs=async function(req,res){
 
-    await database.updateOne({'_id':req.user.id},{$pull:{reqAcceptedNotif:req.params.id}});
+
+    if(req.params.typeof=='reqAccepted'){
+        await database.updateOne({'_id':req.user.id},{$pull:{reqAcceptedNotif:req.params.id}});
+    }else if(req.params.typeof='post_liked'){
+        await database.updateOne({'_id':req.user.id},{$pull:{postLiked:{assetId:req.params.postid,userid:req.params.id}}});
+    }
+    
     return res.json(200,{
         message:'success'
     });
@@ -238,12 +248,40 @@ module.exports.friendAndGroups=async function(req,res){
             newMsgCheck.push('true');
         }
     }
+    let groups=await Groups.find({$or:[{users:req.user.id},{admin:req.user.id}]});
 
 
 
-
-    res.render('friends&groups',{layout:'friends&groups',newMsgCheck:newMsgCheck,userFriends:userFriends});
+    res.render('friends&groups',{layout:'friends&groups',newMsgCheck:newMsgCheck,userFriends:userFriends,groups:groups});
 }
+
+module.exports.findFriends=async function(req,res){
+
+    
+
+    let userFriends1=await Friends.find({requestBy:{$in:[req.user.id]}});
+    let userFriends2=await Friends.find({requestTo:{$in:[req.user.id]}});
+    
+    let userFriends=userFriends1.concat(userFriends2);
+    let userfriendId=new Array();
+    
+    for(let friend of userFriends){
+        if(friend.requestBy._id.toString()==req.user._id.toString()){
+            userfriendId.push(friend.requestTo._id);
+        }else{
+            userfriendId.push(friend.requestBy._id);
+        }
+    }
+
+    let all_users=await database.find({_id:{$nin:userfriendId}});
+
+
+
+    return res.render('findFriends',{layout:'findFriends',users:all_users});
+}
+
+
+
 
 
 module.exports.create= function(req,res){

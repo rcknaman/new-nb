@@ -25,6 +25,7 @@
 const Message=require('../models/message');
 const Chatroom=require('../models/chatRoom');
 const User=require('../models/user');
+const Post=require('../models/post');
 const Friends=require('../models/friends');
 let socketId=require('../variableContainer/variableContainer').socketIdContainer;
 module.exports.chatSockets=async function(socketServer){
@@ -66,35 +67,40 @@ module.exports.chatSockets=async function(socketServer){
         });
 
         socket.on('sendFriendReq',async function(data){
-            console.log('data.toUserId: ',data.toUserId);
-            console.log('socketId[data.toUserId:] ',socketId[data.toUserId]);
-            
-                let requestedby=await User.findById(data.fromUserId);
-                if(requestedby.sendedRequest.includes(data.toUserId)){
-                    if(socketId[data.toUserId]){
-                        io.sockets.in(socketId[data.toUserId]).emit('friend_request_cancelled_reciever', {fromUser: data.fromUserId,username:requestedby.name});                     
+            try {
+                console.log('data.toUserId: ',data.toUserId);
+                console.log('socketId[data.toUserId:] ',socketId[data.toUserId]);
+                
+                    let requestedby=await User.findById(data.fromUserId);
+                    if(requestedby.sendedRequest.includes(data.toUserId)){
+                        if(socketId[data.toUserId]){
+                            io.sockets.in(socketId[data.toUserId]).emit('friend_request_cancelled_reciever', {fromUser: data.fromUserId,username:requestedby.name});                     
+                        }
+                        await User.updateOne({_id:data.toUserId},{$pull:{friendRequests:data.fromUserId}});
+                        await User.updateOne({_id:data.fromUserId},{$pull:{sendedRequest:data.toUserId}});
+                        io.sockets.in(socketId[data.fromUserId]).emit('friend_request_cancelled_sender',{toUser: data.toUserId});
+    
+                    }else{
+    
+    
+                        if(socketId[data.toUserId]){
+                            io.sockets.in(socketId[data.toUserId]).emit('friend_request_recieved', {fromUser: data.fromUserId,username:requestedby.name,profile_pic:requestedby.avatar});                     
+                        }
+                        io.sockets.in(socketId[data.fromUserId]).emit('friend_request_sent',{toUser: data.toUserId});
+                        await User.updateOne({_id:data.toUserId},{$push:{friendRequests:data.fromUserId}});
+                        await User.updateOne({_id:data.fromUserId},{$push:{sendedRequest:data.toUserId}});
                     }
-                    await User.updateOne({_id:data.toUserId},{$pull:{friendRequests:data.fromUserId}});
-                    await User.updateOne({_id:data.fromUserId},{$pull:{sendedRequest:data.toUserId}});
-                    io.sockets.in(socketId[data.fromUserId]).emit('friend_request_cancelled_sender',{toUser: data.toUserId});
+                    console.log('new_friend_req');
+            } catch (error) {
+                console.log(error);
+            }
 
-                }else{
-
-
-                    if(socketId[data.toUserId]){
-                        io.sockets.in(socketId[data.toUserId]).emit('friend_request_recieved', {fromUser: data.fromUserId,username:requestedby.name});                     
-                    }
-                    io.sockets.in(socketId[data.fromUserId]).emit('friend_request_sent',{toUser: data.toUserId});
-                    await User.updateOne({_id:data.toUserId},{$push:{friendRequests:data.fromUserId}});
-                    await User.updateOne({_id:data.fromUserId},{$push:{sendedRequest:data.toUserId}});
-                }
-                console.log('new_friend_req');
         });
         socket.on('friend_request_accepted',async function(data){
 
             let user1=await User.findById(data.toUserId);
             await User.updateOne({_id:data.fromUserId},{$push:{reqAcceptedNotif:data.toUserId}});
-            io.sockets.in(socketId[data.fromUserId]).emit('request accepted by friend',{toUser:data.toUserId,toUserName:user1.name,friendshipId:data.friendshipId});
+            io.sockets.in(socketId[data.fromUserId]).emit('request accepted by friend',{toUser:data.toUserId,toUserName:user1.name,friendshipId:data.friendshipId,profile_pic:user1.avatar});
         });
         socket.on('friend_request_rejected',async function(data){
 
@@ -104,6 +110,37 @@ module.exports.chatSockets=async function(socketServer){
         socket.on('message stored in db',async function(data){
             let sender=await User.findById(data.sentBy);
             io.sockets.in(socketId[data.sentTo]).emit('new message recieved',{sentBy:data.sentBy,message:data.message,senderName:sender.name,messageId:data.messageId});
+
+        });
+        socket.on('post liked by user',async function(data){
+            console.log('post liked by user');
+            console.log(data.assetId);
+            console.log(data.likedBy);
+            let post=await Post.findById(data.assetId);
+            let likedBy=await User.findById(data.likedBy);
+            console.log(post);
+            console.log(likedBy);
+            await User.findByIdAndUpdate(post.user,{$push:{postLiked:{assetId:data.assetId,userid:data.likedBy,username:likedBy.name}}});
+            io.sockets.in(socketId[post.user]).emit('someone liked your post',{
+                likedByName:likedBy.name,
+                likedBy:likedBy.id,
+                assetId:data.assetId,
+                postid:post.id
+            });
+        
+        });
+        socket.on('new group created',async function(data){
+            let admin=await User.findById(data.admin);
+            for(let member of data.members){
+                io.sockets.in(socketId[member]).emit('added to a group',{
+
+                    groupName:data.groupName,
+                    adminName:admin.name,
+                    adminId:admin.id
+
+
+                });
+            }
 
         });
     });

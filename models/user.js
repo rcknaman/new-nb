@@ -27,10 +27,6 @@ const userSchema=new mongoose.Schema({
     avatar: { 
         type:String
     },
-    friends:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'userschema'
-    }],
     chatroom:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Chatroom'
@@ -46,6 +42,21 @@ const userSchema=new mongoose.Schema({
     reqAcceptedNotif:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'userschema'
+    }],
+    postLiked:[{
+
+        assetId:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'userschema'
+        },
+        userid:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'userschema'
+        },
+        username:{
+            type:String
+        }
+
     }],
     bio:{
         type:String

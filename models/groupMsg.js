@@ -1,7 +1,5 @@
 const mongoose=require('mongoose');
 
-
-// for private messaging
 let message=new mongoose.Schema({
 
     message:{
@@ -18,13 +16,13 @@ let message=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Chatroom'
     },
-    seen:{
-        type:String,
-        default:'false'
-    }
+    seen:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'userschema'
+    }]
 },{
     timestamps:true
 });
 
-let Message=mongoose.model('Message',message);
+let Message=mongoose.model('GroupMsg',message);
 module.exports=Message;

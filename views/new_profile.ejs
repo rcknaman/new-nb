@@ -38,7 +38,7 @@
 
               <% if(isFriend){ %>
                 <div id="add-friend" userid="<%= profileDetails.id %>" class="sendMsg">
-                <button  userIdValue="<%= profileDetails._id %>">
+                <button  userIdValue="<%= profileDetails._id %>" username="<%= profileDetails.name %>">
                 Message</button></div>
               <% }else if(sendedRequest){  %>
                 <div id="add-friend" userid="<%= profileDetails.id %>" class="toggleFriendReq">
@@ -73,10 +73,11 @@
         <div id="profile-details">
 
           <div id="profile-stats">
-
             <% if(profileDetails._id.toString()==locals.user.id.toString()){ %> 
               <div id="edit-profile"><a href="/users/update-page"><i class="fas fa-marker"></i></a></div>
-            <% } %> 
+            <% }else if(locals.isFriend){ %>
+              <div id="remove-friend" profileId="<%= profileDetails.id %>"><a href="/users/friends/remove-friend/<%= profileDetails.id %>/<%= locals.user.id %>"><i class="fas fa-user-minus"></i></a></div>
+            <% }else{} %> 
             <div id="friends-count">
               <div class="profile-stats-heading">Friends</div>
               <div><%= friendCount %></div>
@@ -114,3 +115,6 @@
     </div>
     </main>
     <script src="<%= assetPath("front_java/home.js") %>"></script>
+    <script>
+      console.log('isFriend','<%=isFriend%>');
+    </script>

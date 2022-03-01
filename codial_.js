@@ -107,7 +107,7 @@ app.use(session({
     //it implies that do we need to resave the data of the user whose data is already saved with us
     resave:false,
     cookie: {
-        maxAge:(1000*60*100)
+        maxAge:(20 * 365 * 24 * 60 * 60* 1000)
     },
     //here we are telling the mongo store the url where we have to store the old cookies
     store: MongoStore.create(
