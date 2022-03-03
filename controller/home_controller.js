@@ -4,6 +4,7 @@ const Chatroom=require('../models/chatRoom');
 const Message=require('../models/message');
 const Friends=require('../models/friends');
 const Groups=require('../models/group');
+const GroupMsg=require('../models/groupMsg');
 module.exports.home = async function (req, res) {
 
     //this piece of code will not work if we want to display the author of the posts as well along with
@@ -105,8 +106,31 @@ module.exports.home = async function (req, res) {
             newMsgCheck.push('true');
         }
     }
-    let user=await User.find({_id:{$nin:userfriendId}});
     let groups=await Groups.find({$or:[{users:req.user.id},{admin:req.user.id}]});
+
+
+    let newgroupMsgCheck=new Array();
+
+    for(let group of groups){
+
+        let lastMsgId=group.messages[group.messages.length-1];
+        let lastmsg=await GroupMsg.findById(lastMsgId);
+        if(group.messages.length){
+            if(lastmsg.seen.includes(req.user._id) || lastmsg.sentBy.toString()==req.user._id.toString()){
+                newgroupMsgCheck.push('true');
+            }else{
+                newgroupMsgCheck.push('false');
+            }
+        }else{
+            newgroupMsgCheck.push('true');
+        }
+
+    }
+
+
+
+    let user=await User.find({_id:{$nin:userfriendId}});
+    
     console.log('groups',groups);
     return res.render('new_home', {
         title: 'Codial',
@@ -116,7 +140,8 @@ module.exports.home = async function (req, res) {
         myProfile:myProfile,
         newMsgCheck:newMsgCheck,
         userfriendId:userfriendId,
-        groups:groups
+        groups:groups,
+        newgroupMsgCheck:newgroupMsgCheck
     });
 
 

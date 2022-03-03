@@ -235,6 +235,7 @@
           inputFileDom=`
           <div class="preview-content" filetype="video">
             <input type="file" name="file${previewCount}" accept=${type}>
+            <span class="close_btn"><i class="far fa-times-circle"></i></span>
             <div data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
               <div class="preview-video-logo"><i class="fas fa-file-video"></i></div>
               <div class="preview-play"><i class="fas fa-play"></i></div>
@@ -247,6 +248,7 @@
           type="image/*";
           inputFileDom=`
           <div class="preview-content" filetype="image">
+          <span class="close_btn"><i class="far fa-times-circle"></i></span>
             <input type="file" name="file${previewCount}" accept=${type}>
             <img src="" alt="photo"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
           </div>`
@@ -256,6 +258,7 @@
           type="audio/*";
           inputFileDom=`
           <div class="preview-content" filetype="audio">
+          <span class="close_btn"><i class="far fa-times-circle"></i></span>
             <input type="file" name="file${previewCount}" accept=${type}>
             <div data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
               <div class="preview-audio-logo"><i class="fas fa-music"></i></div>
@@ -268,7 +271,7 @@
           return;
         }
 
-        // let inputFileDom=`<div class="preview-content"><input type="file" name="file${previewCount}" accept=${type}><img src="" alt="photo"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"></div>`
+        
 
         $(previewContainer).append(inputFileDom);
         let newPreview=$(`input[name=file${previewCount}]`);
@@ -311,7 +314,8 @@
 
         if(fileArray.length){
           let str=$(uploadLink).prop('href');
-          $(uploadLink).prop('href',str+fileArray.length.toString());
+          let count=$(fileArray).last().attr('name').slice(4);
+          $(uploadLink).prop('href',str+count);
           fileCountSender();
           $(uploadLink).click();
         }else{
@@ -449,3 +453,16 @@ let sessionCheck=function(){
 
 sessionCheck();
 
+$(document).on('click','#cancel-post',function(){
+  $('#new-post-form').trigger('reset');
+  $('#preview-body-content-grid').html('');
+})
+
+$(document).on('click','#preview-body-content-grid .close_btn',function(e){
+
+
+  e.stopImmediatePropagation();
+  $(this).parent().remove();
+
+
+});

@@ -27,6 +27,7 @@ const Chatroom=require('../models/chatRoom');
 const User=require('../models/user');
 const Post=require('../models/post');
 const Friends=require('../models/friends');
+const Groups=require('../models/group');
 let socketId=require('../variableContainer/variableContainer').socketIdContainer;
 module.exports.chatSockets=async function(socketServer){
 
@@ -63,7 +64,11 @@ module.exports.chatSockets=async function(socketServer){
                     userfriendId.push(friend.requestBy);
                 }
             }
-            io.sockets.in(socketId[data.user_id]).emit('universal room joined',{userfriendId:userfriendId});
+
+            let joinedGroups=await Groups.find({$or:[{admin:data.user_id},{users:data.user_id}]},{_id:1});
+            console.log('joinedGroups',joinedGroups);
+
+            io.sockets.in(socketId[data.user_id]).emit('universal room joined',{userfriendId:userfriendId,joinedGroups:joinedGroups});
         });
 
         socket.on('sendFriendReq',async function(data){
@@ -141,6 +146,24 @@ module.exports.chatSockets=async function(socketServer){
 
                 });
             }
+
+        });
+        socket.on('group message stored in db',async function(data){
+
+            let sender=await User.findById(data.sentBy);
+            console.log('data.members',data.members);
+            for(let member of data.members){
+                io.sockets.in(socketId[member]).emit('new group message recieved',{
+                    sentBy:data.sentBy,
+                    message:data.message,
+                    senderName:sender.name,
+                    messageId:data.messageId,
+                    groupId:data.groupId
+                });
+            }
+
+
+
 
         });
     });

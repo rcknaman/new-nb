@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="<%= assetPath('css/chatpage.css') %>">
+    <title>Document</title>
+</head>
+<body>
+
+
+    <div class="loader-wrapper">
+
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <h2><i class="fas fa-praying-hands faa-falling faa-reverse"></i></h2>
+      </div></div>
+
+
+    <header>
+
+        <a onclick="history.back()"><i class="fas fa-chevron-left"></i></a>
+        <p><%= groupname %></p>
+    </header>
+    <main>
+
+        <% for(let message of messages){ %> 
+
+
+            <% if(message.sentBy.id.toString()==locals.user.id.toString()){ %> 
+
+                <div class="self-msg msg">
+
+                    <div class="username"><p>You</p></div>
+                    <div class="msg-content"><p><%= message.message%> </p></div>
+                </div>
+            <% }else{ %>
+
+
+                <div class="user-msg msg">
+
+                    <div class="username"><p><%= message.sentBy.name %></p></div>
+                    <div class="msg-content"><p><%= message.message%> </p></div>
+                </div>
+            <% } %> 
+
+        <% } %> 
+
+    </main>
+    <!-- <form id="create-msg" method="post" action="/message/create">
+        <div id="input-msg"><input type="text" placeholder="text here..."></div>
+        <div id="send-msg"><button type="submit"><i class="fas fa-angle-double-right"></i></button></div>
+    </form> -->
+    <form id="create-msg" method="post" action='/groups/Createmessage'>
+        <div id="input-msg"><input type="text" placeholder="text here..."  name="message"></div>
+        <input name="groupId" type="hidden" value="<%= groupId %>">
+        
+        <div id="send-msg"><button type="submit"><i class="fas fa-angle-double-right"></i></button></div>
+    </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <script src="<%= assetPath('front_java/groupchatpage.js') %>"></script>
+    <% if(locals.user){ %>
+        <script>
+            let user=new chatEngine('chat-box','<%=locals.user.email%>','<%=locals.user.id%>','<%=locals.user.name%>');
+           
+        </script>
+      <% } %> 
+
+      <script>
+        $(window).on('load',function(){
+          $('.loader-wrapper').fadeOut('slow');
+          // $('.loader').fadeOut('slow');
+        })
+      
+      
+      </script>
+</body>
+</html>

@@ -36,14 +36,26 @@ class chatEngine{
                 
                 console.log('new message recieved');
                 console.log($(`#friendOrObjectId-${data.sentBy} .notification-badge`).length);
-                if(!$(`#friendOrObjectId-${data.sentBy} .notification-badge`).length){
-                    $(`#friendOrObjectId-${data.sentBy} .msg-add-friend`).append(`
+                if(!$(`#friendId-${data.sentBy} .notification-badge`).length){
+                    $(`#friendId-${data.sentBy} .msg-add-friend`).append(`
                     
                     <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
                     </span>
                     
                     `)
                 }
+            });
+            self.socket.on('new group message recieved',function(data){
+
+                if(!$(`#groupId-${data.groupId} .notification-badge`).length){
+                    $(`#groupId-${data.groupId} .msg-add-friend`).append(`
+                    
+                    <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
+                    </span>
+                    
+                    `)
+                }
+
             });
 
         });

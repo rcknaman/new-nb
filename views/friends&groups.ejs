@@ -66,12 +66,23 @@
             </div>
             <% friendIndex++; %> 
           <% } %> 
+
+          <% let groupIndex=0; %> 
         <% for(let group of groups){ %> 
 
 
             <div id="groupId-<%= group.id %>">
               <div class="list-content-wrapper">
-                <a class="profile-btn">
+                <a class="profile-btn"
+                
+                <% if(group.admin.toString()==locals.user.id.toString()){ %> 
+                  href="/groups/groupUpdatePage/<%= group.id %>"
+                  <% }else{ %>
+
+                    href="/groups/groupinfopage/<%= group.id %>"
+
+                  <% } %> 
+                >
                     <div class="img-container">
 
                       <img src="<%= group.groupPic %>" alt="">
@@ -79,13 +90,19 @@
                     
                     <%= group.name %>
                 </a>
-                <a class="msg-add-friend initiate-msg" href="">
+                <a class="msg-add-friend initiate-msg" href="/groups/groupchatpage/<%= group.id %>">
                   <i class="fas fa-comment-dots"></i>
+                  <% if(newgroupMsgCheck[groupIndex].toString()=='false'){ %> 
+                    <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
+                      <span class="visually-hidden">New alerts</span>
+                    </span>
+
+                  <% } %> 
                 </a>
               </div>
               <div class="side-list-border"></div>
             </div>
-            <% friendIndex++; %> 
+            <% groupIndex++; %> 
           <% } %> 
 
     </main>

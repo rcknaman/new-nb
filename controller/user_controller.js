@@ -7,6 +7,7 @@ const crypyo=require('crypto');
 const Message=require('../models/message');
 let Posts=require('../models/post');
 let Groups=require('../models/group');
+let GroupMsg=require('../models/groupMsg');
 const UpdatePasswordTokenMailer=require('../mailer/update_password_link');
 
 const accessTokenModel=require('../models/accessToken_modal');
@@ -249,10 +250,32 @@ module.exports.friendAndGroups=async function(req,res){
         }
     }
     let groups=await Groups.find({$or:[{users:req.user.id},{admin:req.user.id}]});
+    let newgroupMsgCheck=new Array();
+
+    for(let group of groups){
+
+        let lastMsgId=group.messages[group.messages.length-1];
+        let lastmsg=await GroupMsg.findById(lastMsgId);
+        if(group.messages.length){
+            if(lastmsg.seen.includes(req.user._id) || lastmsg.sentBy.toString()==req.user._id.toString()){
+                newgroupMsgCheck.push('true');
+            }else{
+                newgroupMsgCheck.push('false');
+            }
+        }else{
+            newgroupMsgCheck.push('true');
+        }
+
+    }
 
 
-
-    res.render('friends&groups',{layout:'friends&groups',newMsgCheck:newMsgCheck,userFriends:userFriends,groups:groups});
+    res.render('friends&groups',{
+        layout:'friends&groups',
+        newMsgCheck:newMsgCheck,
+        userFriends:userFriends,
+        groups:groups,
+        newgroupMsgCheck:newgroupMsgCheck
+    });
 }
 
 module.exports.findFriends=async function(req,res){

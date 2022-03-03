@@ -1,6 +1,7 @@
 // socket for front end side
 // it is known as subscriber file
 
+
 class chatEngine{
 
     constructor(ChatBoxId,useremail,userid,username){
@@ -22,7 +23,7 @@ class chatEngine{
 
         let self=this;
         let flag=1;//flag for handling nested click event here in 'initialchat'
-
+        let groupFlag=1;
         let groupInfo=function(){
 
             $(document).on('click','.profile-btn',function(e){
@@ -32,6 +33,7 @@ class chatEngine{
                 if($(this).attr('type')=='group'){
 
                     let groupId=$(this).parent().parent().attr('groupid');
+                    console.log('groupId: ',groupId);
                     let admin=$(this).attr('admin');
                     $('#CreategroupModal form').attr('action',`/groups/update/${groupId}`);
                     $.ajax({
@@ -82,8 +84,8 @@ class chatEngine{
                                     `
                                     <li class="list-group-item form-check" aria-current="true">
 
-                                        <input type="checkbox" id="grp_user_${restuser._id}" class="check_box" name="groupMembers" value="${restuser.id}">
-                                        <label class="form-check-label" for="grp_user_${restuser.id}">
+                                        <input type="checkbox" id="grp_user_${restuser._id}" class="check_box" name="groupMembers" value="${restuser._id}">
+                                        <label class="form-check-label" for="grp_user_${restuser._id}">
                                         
                                             ${restuser.name}
                                         
@@ -105,8 +107,9 @@ class chatEngine{
                                 console.log($('#CreategroupModal .group-desc input'));
                                 $('#CreategroupModal .group-desc input').val(data.data.group.description);
                                 $('#CreategroupModal .group-profile-pic img').attr('src',data.data.group.groupPic);
-                                $('#CreategroupModal .create-group-form .group-section-heading').html('group Details(please upload group again!)');
+                                $('#CreategroupModal .create-group-form .group-section-heading').html('group Details');
                                 $('#groupModalArea').html('Edit Group')
+                                $(`#CreategroupModal button[type="submit"]`).html('Edit Group');
                                 
 
 
@@ -304,17 +307,19 @@ class chatEngine{
     
                         // $("#chats").animate({ scrollTop: 20000000 }, "slow");
                         $('#chat-container').attr('friendId',friendId);
+                        $('#chat-container').attr('groupid','');
+                        $('#chat-container').attr('type','friend');
                     }
      
                     if(flag==1){
-                        $(document).on('click',`#chat-container .heading i`,function(e){
-                            e.preventDefault();
-                            console.log($(this));
-                            console.log(`$('#chat-container .chats-container'): `,$('#chat-container .chats-container'));
-                            $(`#chat-container .chats-container`).toggleClass('minimize-chat-body');
-                            $("#chat-container").toggleClass('minimize-chat-container');
-                            $(this).toggleClass("fa-angle-up fa-angle-down");
-                        });
+                        // $(document).on('click',`#chat-container .heading i`,function(e){
+                        //     e.preventDefault();
+                        //     console.log($(this));
+                        //     console.log(`$('#chat-container .chats-container'): `,$('#chat-container .chats-container'));
+                        //     $(`#chat-container .chats-container`).toggleClass('minimize-chat-body');
+                        //     $("#chat-container").toggleClass('minimize-chat-container');
+                        //     $(this).toggleClass("fa-angle-up fa-angle-down");
+                        // });
                         sendingMsg(self);
                         flag=0;
                     }
@@ -344,7 +349,161 @@ class chatEngine{
             });
 
         }
+        let groupInitiateMsg=function(self,groupId){
+       
+            let chatHeader = $('#chat-container>div').first();
+            function helper(curr,groupId){
 
+                console.log('groupId',groupId);
+                if($(window).width()>890){
+
+
+
+
+                    // console.log(`$('#chat-container').attr('friendId'): `,!$('#chat-container').attr('friendId'));
+                    if(!$('#chat-container').attr('groupId') || $('#chat-container').attr('groupId').toString()!=groupId.toString()){
+    
+                        $.ajax({
+    
+                            type:'get',
+                            url:`/groups/loadMessage/${groupId}`,
+                            success:function(data){
+                                console.log('entered again 20e',groupId);
+                                let messageDom=``;
+                                
+                                if(data.data.isValid){
+
+                                    $(' .notification-badge',$(curr)).remove();
+                                    $(chatHeader).css({
+                                        'background-color': '#0A58CA',
+                                        'color': "white"
+                                    });
+                                    $(' p', chatHeader).css('left', '10px');
+                                    let groupname;
+
+                                    groupname=$(' .profile-btn', $(curr).parent()).text();
+
+                                    groupname = groupname+' '+'<i class="fas fa-angle-down"></i>';
+                                    $(' p', chatHeader).fadeOut(200, function () {
+                                        $(this).html(groupname).fadeIn(500);
+                                    });
+
+
+
+
+
+                                    for(let message of data.data.messages){
+    
+                                        if(message.sentBy._id.toString()==self.userId.toString()){
+                                            messageDom+=`
+                                            
+                                            <li class="self-msg">
+                                                <div class="username"><p>You</p></div>
+                                                <div class="msg-content"><p>${message.message}</p></div>
+                                            </li>
+                                            
+                                            
+                                            `
+                                        }
+                                        else{
+                                            messageDom+=`
+                                            
+                                            <li class="user-msg">
+                                                <div class="username"><p>${message.sentBy.name}</p></div>
+                                                <div class="msg-content"><p>${message.message}</p></div>
+                                            </li>               
+                                            `
+                                        }
+        
+        
+                                    }
+
+                                    $('#chat-container .chats-container').html(
+        
+                                        `<ul id="chats">`
+        
+                                        +messageDom+
+        
+        
+        
+                                        `</ul>
+                                        <a href="#last-msg" style="display:none;"></a>
+                                        <form id="create-msg" method="post" action='/groups/Createmessage'>
+                                            <div id="input-msg"><input type="text" placeholder="text here..."  name="message"></div>
+                                            <input name="groupId" type="hidden" value="${groupId}">
+                                            
+                                            <div id="send-msg"><button type="submit"><i class="fas fa-angle-double-right"></i></button></div>
+                                        </form>`
+                        
+                        
+                                    )
+        
+                                    $('#chats li').last().attr('id','last-msg');
+        
+                                                        
+                                    function scrollToBottom(){
+                                        const messages = document.getElementById('chats');
+                                        const messagesid = document.getElementById('last-msg');
+                                        if(messagesid){
+                                            messages.scrollTop = messagesid.offsetTop;
+                                        }
+                                        
+                                    }
+                                    
+                                    scrollToBottom();
+ 
+
+                                }else{
+                                    window.location.href = "/";
+                                }
+                            }
+    
+                        });
+    
+                        // $("#chats").animate({ scrollTop: 20000000 }, "slow");
+                        $('#chat-container').attr('groupId',groupId);
+                        $('#chat-container').attr('friendId','');
+                        $('#chat-container').attr('type','group');
+                    }
+                    if(groupFlag==1){
+                        // $(document).on('click',`#chat-container .heading i`,function(e){
+                        //     e.preventDefault();
+                        //     console.log($(this));
+                        //     console.log(`$('#chat-container .chats-container'): `,$('#chat-container .chats-container'));
+                        //     $(`#chat-container .chats-container`).toggleClass('minimize-chat-body');
+                        //     $("#chat-container").toggleClass('minimize-chat-container');
+                        //     $(this).toggleClass("fa-angle-up fa-angle-down");
+                        // });
+                        GroupSendingMsg(self);
+                        groupFlag=0;
+                    }
+
+
+                }else{
+
+
+
+                    window.location.href=`/message/messagepage/${friendId}`;
+
+
+
+
+                }
+    
+            }
+
+            
+
+            $(document).on('click',`#Groups li[groupid="${groupId}"] .msg-add-friend`,function (e) {
+                helper(this,groupId);
+
+            });
+
+
+
+
+
+        }
         let deleteNotif=function(notificationType){
             $(document).on('click','.notif-close-btn',function(e){
 
@@ -554,7 +713,7 @@ class chatEngine{
         }
         let sendingMsg=function(self){
 
-            $(document).on('submit','#create-msg',function(e){
+            $(document).on('submit','div[type="friend"].chat-box #create-msg',function(e){
                 
                 e.preventDefault()
                 console.log($(this)[0]);
@@ -569,6 +728,7 @@ class chatEngine{
                         if(data.data.valid){
                             console.log('repeat');
                             console.log('data: ',data);
+
                             $('#chats').append(
     
                                 `
@@ -589,6 +749,63 @@ class chatEngine{
                                 sentTo:data.data.sentTo,
                                 message:data.data.message,
                                 messageId:data.data.messageId
+                            });
+                        }else{
+                            window.location.href = "/";
+                        }
+
+
+
+                    }
+
+
+                });
+
+
+
+            });
+
+
+
+        }
+        let GroupSendingMsg=function(self){
+
+            $(document).on('submit','div[type="group"].chat-box #create-msg',function(e){
+                
+                e.preventDefault();
+                console.log($(this)[0]);
+                console.log('$(formData).serialize(): ',$(this).serialize());
+                $.ajax({
+
+                    type:'post',
+                    url:'/groups/Createmessage',
+                    data:$(this).serialize(),
+                    success:function(data){
+                        console.log(data.data);
+                        if(data.data.valid){
+                            console.log('repeat');
+                            console.log('data: ',data);
+                            $('#chats').append(
+    
+                                `
+                                
+                                <li class="self-msg">
+                                    <div class="username"><p>You</p></div>
+                                    <div class="msg-content"><p>${data.data.message}</p></div>
+                                </li>
+                                
+                                
+                                `);
+                            $(document).ready(function(){
+                                $('#input-msg input').val('');
+                            });
+                            console.log('data.data.members',data.data.members);
+                            self.socket.emit('group message stored in db',{
+                                sentBy:data.data.sentBy,
+                                groupId:data.data.groupId,
+                                message:data.data.message,
+                                messageId:data.data.messageId,
+                                members:data.data.members
                             });
                         }else{
                             window.location.href = "/";
@@ -677,6 +894,7 @@ class chatEngine{
 
                         }
                         console.log('data.allUsers',data.allUsers);
+                        $(`#CreategroupModal button[type="submit"]`).html('Create Group')
                         $('#CreategroupModal .list-group').html(groupMembersDom);
                         $('#CreategroupModal .create-group-form .group-section-heading').html('group Details');
                     }
@@ -705,7 +923,10 @@ class chatEngine{
                 for(let friend of data.userfriendId){
                     initiateChat(self,friend);
                 }
-
+                console.log('data.joinedGroups',data.joinedGroups)
+                for(let group of data.joinedGroups){
+                    groupInitiateMsg(self,group._id.toString());
+                }
             });
             self.socket.on('added to a group',function(data){
 
@@ -932,28 +1153,23 @@ class chatEngine{
 
             self.socket.on('new message recieved',function(data){
                 
-                $(`#friends li[friendid=${data.sentBy}] .msg-add-friend`).append(
 
-                    `
-                    
-                        <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
-                            <span class="visually-hidden">New alerts</span>
-                        </span>
-                    
-                    `
-                )
-                $('#chats').append(
 
-                    `
-                    
-                    <li class="user-msg">
-                        <div class="username"><p>${data.senderName}</p></div>
-                        <div class="msg-content"><p>${data.message}</p></div>
-                    </li>
-                    
-                    
-                `);
+
                 if(($(`#chat-container`).attr('friendid') && $(`#chat-container`).attr('friendid').toString()==data.sentBy.toString())){
+                    
+                    $('#chats').append(
+
+                        `
+                        
+                        <li class="user-msg">
+                            <div class="username"><p>${data.senderName}</p></div>
+                            <div class="msg-content"><p>${data.message}</p></div>
+                        </li>
+                        
+                        
+                    `);
+                    
                     $.ajax({
                         type:'post',
                         url:`/message/seen/${data.messageId}`,
@@ -964,6 +1180,76 @@ class chatEngine{
                             $(`li[friendid="${data.sentBy}"] .notification-badge`).remove();
                         }
                     });
+                }else{
+
+
+
+                    $(`#friends li[friendid=${data.sentBy}] .msg-add-friend`).append(
+
+                        `
+                        
+                            <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
+                                <span class="visually-hidden">New alerts</span>
+                            </span>
+                        
+                        `
+                    )
+                }
+
+
+
+            });
+
+
+            self.socket.on('new group message recieved',function(data){
+                
+
+
+                if(($(`#chat-container`).attr('groupid') && $(`#chat-container`).attr('groupid').toString()==data.groupId.toString())){
+                    
+                    if(data.sentBy.toString()!=self.userId.toString()){
+
+
+                        $('#chats').append(
+
+                            `
+                            
+                            <li class="user-msg">
+                                <div class="username"><p>${data.senderName}</p></div>
+                                <div class="msg-content"><p>${data.message}</p></div>
+                            </li>
+                            
+                            
+                        `);
+                        
+                        console.log('new group message recieved');
+                        
+                        $.ajax({
+                            type:'post',
+                            url:`/groups/seenMessage/${data.messageId}`,
+                            success:function(){
+                                console.log('xyz: ',$(`li[groupid="${data.groupId}"] .notification-badge`));
+                                // console.log(`li[groupid="${data.sentBy}"`);
+                                console.log('data: ',data);
+                                $(`li[friendid="${data.sentBy}"] .notification-badge`).remove();
+                            }
+                        });
+                    }
+
+                }else{
+
+                    $(`#Groups li[groupid=${data.groupId}] .msg-add-friend`).append(
+
+                        `
+                        
+                            <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
+                                <span class="visually-hidden">New alerts</span>
+                            </span>
+                        
+                        `
+                    )
+
+
                 }
 
 
@@ -996,6 +1282,17 @@ class chatEngine{
 
 
             });
+
+            $(document).on('click',`#chat-container .heading i`,function(e){
+                e.preventDefault();
+                console.log($(this));
+                console.log(`$('#chat-container .chats-container'): `,$('#chat-container .chats-container'));
+                $(`#chat-container .chats-container`).toggleClass('minimize-chat-body');
+                $("#chat-container").toggleClass('minimize-chat-container');
+                $(this).toggleClass("fa-angle-up fa-angle-down");
+            });
+
+
             deleteNotif('reqAccepted');
             deleteNotif('post_liked');
             acceptRejectBtn();

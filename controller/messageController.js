@@ -11,8 +11,7 @@ module.exports.createMessage=async function(req,res){
         console.log('message: ',req.body.message);
         let message=await Message.create({
             message:req.body.message,
-            sentBy:req.user.id,
-            type:'private'
+            sentBy:req.user.id
         });
         let friendship=await Friends.findByIdAndUpdate(friendshipid.id,
         {

@@ -51,7 +51,7 @@
       <!-- <div class="heading user-select"><p>Groups</p></div> -->
       <div class="heading user-select" id="group-heading"><p>Groups <span id="new-group" data-bs-toggle="modal" data-bs-target="#CreategroupModal"><i class="fas fa-users"></i>+</span></p></div>
       <ul id="Groups">
-          
+          <% let groupIndex=0; %> 
           <% for(let group of groups){ %> 
 
             <li groupId="<%= group.id %>">
@@ -79,9 +79,13 @@
                   </p>
                   
                 </a>
-                <a class="msg-add-friend initiate-msg">
+                <a class="msg-add-friend initiate-msg" type="group">
                   <i class="fas fa-comment-dots"></i>
-
+                  <% if(newgroupMsgCheck[groupIndex].toString()=='false'){ %> 
+                    <span class="position-absolute translate-middle p-2 rounded-circle notification-badge">
+                      <span class="visually-hidden">New alerts</span>
+                    </span>
+                  <% } %> 
                 </a>
               </div>
               <div class="side-list-border"></div>
