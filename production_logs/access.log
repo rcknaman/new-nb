@@ -1,1 +1,19 @@
 [0mGET / [36m304[0m 182.836 ms - -[0m
+[0mGET / [32m200[0m 100.562 ms - 35008[0m
+[0mGET / [32m200[0m 74.899 ms - 35068[0m
+[0mGET / [32m200[0m 91.551 ms - 35008[0m
+[0mGET /users/profile/621b095f22a1c27da660d16a [32m200[0m 119.167 ms - 14238[0m
+[0mGET /users/findFriends [32m200[0m 28.734 ms - 2326[0m
+[0mGET /users/findFriends [36m304[0m 31.610 ms - -[0m
+[0mGET /users/findFriends [36m304[0m 14.698 ms - -[0m
+[0mGET /users/friendAndGroups [32m200[0m 44.949 ms - 5685[0m
+[0mGET /groups/createGroupPage [32m200[0m 18.620 ms - 3223[0m
+[0mGET /groups/finalgif.gif [33m404[0m 13.466 ms - 158[0m
+[0mGET / [36m304[0m 103.952 ms - -[0m
+[0mGET /users/sessionCheck [36m304[0m 13.485 ms - -[0m
+::1 - - [11/Mar/2022:19:28:21 +0000] "GET / HTTP/1.1" 302 70 "http://localhost:8000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"
+::1 - - [11/Mar/2022:19:28:21 +0000] "GET /users/signin HTTP/1.1" 200 2786 "http://localhost:8000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"
+::1 - - [11/Mar/2022:19:28:29 +0000] "POST /users/create-session HTTP/1.1" 302 70 "http://localhost:8000/users/signin" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"
+::1 - - [11/Mar/2022:19:28:29 +0000] "GET /users/signin HTTP/1.1" 304 - "http://localhost:8000/users/signin" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"
+::1 - - [11/Mar/2022:19:28:33 +0000] "POST /users/create-session HTTP/1.1" 302 46 "http://localhost:8000/users/signin" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"
+::1 - - [11/Mar/2022:19:28:33 +0000] "GET / HTTP/1.1" 200 22887 "http://localhost:8000/users/signin" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"

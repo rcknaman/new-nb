@@ -78,6 +78,6 @@ const production={
         options: {stream:accessLogStream}
     }
 }
-// module.exports=eval(process.env.codial_enviroment)==undefined?development:eval(process.env.codial_enviroment);
-module.exports=development;
+module.exports=eval(process.env.codial_enviroment)==undefined?development:eval(process.env.codial_enviroment);
+// module.exports=development;
 // module.exports=development;
