@@ -226,15 +226,31 @@
 
         let previewContainer=$('#preview-body-content-grid');
         let previewCount=$('>div',previewContainer).length+1;
+        // let fileArray=$('#preview-body-content-grid>div>input');
+        // let count;
+        // if($(fileArray).length>0){
+        //   count=$(fileArray).last().attr('name').slice(4);
+        // }else{
+        //   count=0;
+        // }
         let type;
         let buttonId=$(this).prop('id');
         console.log(buttonId);
         let inputFileDom;
         if(buttonId=='upload-video'){
+
+          let fileArray=$('#preview-body-content-grid>div>input');
+          let count;
+          if($(fileArray).length>0){
+            count=$(fileArray).last().attr('name').slice(4);
+          }else{
+            count=0;
+          }
+          count++;
           type="video/*";
           inputFileDom=`
           <div class="preview-content" filetype="video">
-            <input type="file" name="file${previewCount}" accept=${type}>
+            <input type="file" name="file${count}" accept=${type}>
             <span class="close_btn"><i class="far fa-times-circle"></i></span>
             <div data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
               <div class="preview-video-logo"><i class="fas fa-file-video"></i></div>
@@ -245,21 +261,39 @@
 
           
         }else if(buttonId=='upload-photo'){
+
+          let fileArray=$('#preview-body-content-grid>div>input');
+          let count;
+          if($(fileArray).length>0){
+            count=$(fileArray).last().attr('name').slice(4);
+          }else{
+            count=0;
+          }
+          count++;
           type="image/*";
           inputFileDom=`
           <div class="preview-content" filetype="image">
           <span class="close_btn"><i class="far fa-times-circle"></i></span>
-            <input type="file" name="file${previewCount}" accept=${type}>
+            <input type="file" name="file${count}" accept=${type}>
             <img src="" alt="photo"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
           </div>`
 
          
         }else if(buttonId=='upload-audio'){
+
+          let fileArray=$('#preview-body-content-grid>div>input');
+          let count;
+          if($(fileArray).length>0){
+            count=$(fileArray).last().attr('name').slice(4);
+          }else{
+            count=0;
+          }
+          count++;
           type="audio/*";
           inputFileDom=`
           <div class="preview-content" filetype="audio">
           <span class="close_btn"><i class="far fa-times-circle"></i></span>
-            <input type="file" name="file${previewCount}" accept=${type}>
+            <input type="file" name="file${count}" accept=${type}>
             <div data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
               <div class="preview-audio-logo"><i class="fas fa-music"></i></div>
               <div class="preview-play"><i class="fas fa-play"></i></div>
@@ -274,7 +308,7 @@
         
 
         $(previewContainer).append(inputFileDom);
-        let newPreview=$(`input[name=file${previewCount}]`);
+        let newPreview=$(`input[name=file${$('#preview-body-content-grid>div>input').last().attr('name').slice(4)}]`);
         $(newPreview).parent().css('display','none');
         aftergivingvaluetoinput(newPreview,type);
         $(newPreview).click();

@@ -88,6 +88,26 @@ module.exports.profile=async function(req,res){
             newMsgCheck.push('true');
         }
     }
+    let groups=await Groups.find({$or:[{users:req.user.id},{admin:req.user.id}]});
+
+
+    let newgroupMsgCheck=new Array();
+
+    for(let group of groups){
+
+        let lastMsgId=group.messages[group.messages.length-1];
+        let lastmsg=await GroupMsg.findById(lastMsgId);
+        if(group.messages.length){
+            if(lastmsg.seen.includes(req.user._id) || lastmsg.sentBy.toString()==req.user._id.toString()){
+                newgroupMsgCheck.push('true');
+            }else{
+                newgroupMsgCheck.push('false');
+            }
+        }else{
+            newgroupMsgCheck.push('true');
+        }
+
+    }
     let Alluser=await database.find({_id:{$nin:userfriendId}});
     let profileDetails=await database.findById(req.params.id);
 
@@ -109,7 +129,6 @@ module.exports.profile=async function(req,res){
         path:'likes',
         select:'user reaction'
     });
-    let groups=await Groups.find({$or:[{users:req.user.id},{admin:req.user.id}]});
     console.log('userctrl friedn',!!isFriend);
     return res.render('new_profile', {
         title: 'codial|profile page',
@@ -123,7 +142,8 @@ module.exports.profile=async function(req,res){
         postsCount:posts.length,
         posts:posts,
         isFriend:!!isFriend,
-        groups:groups
+        groups:groups,
+        newgroupMsgCheck:newgroupMsgCheck
     });
 
 }
