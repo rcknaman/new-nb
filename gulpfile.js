@@ -24,7 +24,7 @@ gulp.task('css',function(){
     // converting sass->css
     .pipe(sass())
     // minify css 
-    .pipe(cssnano())
+    .pipe(cssnano({ discardUnused: false,reduceIdents: false}))
     // where to save css files
     .pipe(gulp.dest('./assets/css'))
     // ------------------------------------------------------------------
@@ -70,17 +70,15 @@ gulp.task('javascript',function(done){
 // name='images'
 gulp.task('images',function(done){
     console.log('images');
-    gulp.src('./assets/**/*+.(png|jpg|gif|svg|jpeg)')
+    gulp.src('./assets/**/*.+(png|jpg|gif|svg|jpeg)')
     .pipe(imagemin())
-    
-    .pipe(gulp.dest('./public/assets'))
-    gulp.src('./assets/**/*+.(png|jpg|gif|svg|jpeg)')
     .pipe(rev())
+    .pipe(gulp.dest('./public/assets'))
     .pipe(rev.manifest({
         cwd:'public',
         merge:true
     }))
-    .pipe(gulp.dest('./public/assets'))
+    .pipe(gulp.dest('./public/assets'));
     done();
 })
 // name='clean:assets'

@@ -1,0 +1,42 @@
+body{
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    box-sizing: border-box;
+    flex-direction: column;
+    background-color: #B92B27;
+    color: white;
+}
+
+#logo{
+    width: fit-content;
+    height: fit-content;
+
+}
+#form-box{
+    height: 400px;
+    width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+#form-box p{
+    text-align: center;
+}
+@media screen and (max-width:450px) {
+    #form-box{
+        width: 100%;
+    }
+
+}
+@media screen and (max-width:400px) {
+    #logo{
+        width: 100%;
+    }
+    #logo img{
+        width: 100%;
+    }
+}

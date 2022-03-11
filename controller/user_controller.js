@@ -440,7 +440,7 @@ module.exports.update = async function(req,res){
 
 // this function renders a page where user enters their email associated with forgotten password account
 module.exports.enterMail=function(req,res){
-    return res.render('forgot-password',{});
+    return res.render('emailVerify',{layout:'emailVerify'});
 }
 
 // here we are checking whether the given email exists or not and if it exists then we are sending the mail
@@ -449,7 +449,7 @@ module.exports.enterMail=function(req,res){
 module.exports.verifyMail=async function(req,res){
 
     let user= await database.findOne({email:req.body.email});
-
+    console.log(user);
     if(!user){
         return res.redirect('back');
     }
@@ -469,7 +469,7 @@ module.exports.verifyMail=async function(req,res){
         isValid:true
     });
 
-    return res.render('waitforToken');
+    return res.render('checkYourMail',{layout:'checkYourMail'});
 }
 // this action will load the password update page but only when the user clicks the link from their mail message
 // consisting of a non expired token
@@ -478,9 +478,9 @@ module.exports.PasswordUpdatePage=async function(req,res){
     let tokenData=await accessTokenModel.findOne({accessToken:req.params.id});
 
     if(tokenData && tokenData.isValid){
-        return res.render('password_update_page',{token:tokenData.accessToken});
+        return res.render('passwordUpdatePage',{token:tokenData.accessToken,layout:'passwordUpdatePage'});
     }else{
-        return res.render('expired_link');
+        return res.render('expired_link',{layout:'expired_link'});
     }
 }
 

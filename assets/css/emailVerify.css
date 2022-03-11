@@ -1,0 +1,78 @@
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  box-sizing: border-box;
+  flex-direction: column;
+  background-color: #B92B27;
+  color: white; }
+
+#logo {
+  width: fit-content;
+  height: fit-content; }
+
+#form-box {
+  height: 400px;
+  width: 400px; }
+
+form {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; }
+
+form > div {
+  width: 100%;
+  margin-bottom: 5px; }
+
+form button {
+  background-color: #5e0603;
+  border-radius: 3px;
+  border: 1px solid #B92B27;
+  color: white;
+  transition: all 0.3s ease-in-out; }
+
+form button:hover {
+  background-color: #380302; }
+
+input:focus {
+  box-shadow: 0 0 3px 3px #661512 !important;
+  border-color: #B92B27 !important; }
+
+#submit-btn {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap; }
+
+#submit-btn img {
+  height: 20px;
+  width: 20px; }
+
+#submit-btn a {
+  text-decoration: none;
+  color: #490806;
+  transition: all .2s ease-in-out; }
+
+#submit-btn a:hover {
+  color: white; }
+
+@media screen and (max-width: 450px) {
+  #form-box {
+    width: 100%; } }
+
+@media screen and (max-width: 400px) {
+  #logo {
+    width: 100%; }
+  #logo img {
+    width: 100%; }
+  #submit-btn {
+    justify-content: center; }
+  form div:first-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; } }

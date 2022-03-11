@@ -1,0 +1,9 @@
+{let i=1,o=function(){$(document).ready(function(){$(document).on("click","#CreategroupModal .btn-close",function(o){$("#CreategroupModal .group-name input").val(""),$("#CreategroupModal .group-desc input").val(""),$("#CreategroupModal .group-profile-pic img").attr("src",""),$("#CreategroupModal .list-group").html(""),$("#groupModalArea").html("Create Group")})});let o=$("#logo-border a").attr("href");$(window).resize(function(){$(window).width()<690&&1==$("#mini-options ul li").length?($("#mini-options ul").append(`
+                
+                    <li><a class="dropdown-item" href="/users/friendAndGroups">friends,groups & Chats</a></li>
+                
+                `),i=0):690<=$(window).width()&&1<$("#mini-options ul li").length&&$("#mini-options ul li").last().remove(),$(window).width()<=450?$("#logo-container a").html('<i class="fas fa-praying-hands"></i>'):$("#logo-container a").html(`<img src="${o}" alt="">`)}),$(window).width()<690&&i&&($("#mini-options ul").append(`
+            
+                <li><a class="dropdown-item" href="/users/friendAndGroups">friends,groups & Chats</a></li>
+            
+            `),i=0),$(window).width()<=450&&$("#logo-container a").html('<i class="fas fa-praying-hands"></i>')};console.log("$('#chat-container .heading .fa-angle-down'): ",$("#chat-container .heading")),console.log($("#chat-container>div").first().html());let n=function(n){$(n).change(function(o){let i=$("+img",$(n));if($(n)[0].files&&$(n)[0].files[0]){let o=new FileReader;o.onload=function(o){$(i).prop("src",o.target.result),$("#pic-remove").css("display","block")},o.readAsDataURL($(n)[0].files[0])}})},e=function(o){""==$(o).prop("src")?$("#pic-remove").css("display","none"):$("#pic-remove").css("display","block")},a=function(n){$("#pic-remove").click(function(o){var i=$("+img",$(n));$(i).prop("src",""),$(n).val(""),$("#pic-remove").css("display","none")})},r=$(".group-profile-pic>input");e(r),n(r),a(r),o()}

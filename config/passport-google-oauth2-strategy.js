@@ -43,7 +43,8 @@ passport.use(new googleStrategy({
                         //don't return 'true' in place of 'user'
                         return done(null,user);
                     }
-
+                    console.log(user);
+                    return done(null,user);
                 });
             }
         });

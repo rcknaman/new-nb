@@ -1,6 +1,14 @@
 {
-  "css/home.css": "css/home-1a3473f098.css",
-  "css/layout.css": "css/layout-9eebe088e8.css",
-  "css/layout_new.css": "css/layout_new-c4a0a6455c.css",
-  "css/profile.css": "css/profile-8b89e7be0e.css"
+  "css/chatpage.css": "css/chatpage-90a53b97d9.css",
+  "css/creategroup.css": "css/creategroup-a54952bb67.css",
+  "css/findFriends.css": "css/findFriends-99bdcdb10c.css",
+  "css/friends&groups.css": "css/friends&groups-b44f017669.css",
+  "css/groupinfo.css": "css/groupinfo-df016617d0.css",
+  "css/home.css": "css/home-a160b88007.css",
+  "css/layout_new.css": "css/layout_new-773f1613bb.css",
+  "css/new_profile.css": "css/new_profile-1f5dbc3450.css",
+  "css/new_signin.css": "css/new_signin-5b7052c189.css",
+  "css/new_signup.css": "css/new_signup-8ba6b182a1.css",
+  "css/updateProfile.css": "css/updateProfile-bf39ebc5be.css",
+  "css/updategroup.css": "css/updategroup-fc6b7ca893.css"
 }

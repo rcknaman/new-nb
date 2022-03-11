@@ -12,7 +12,7 @@
             });
         });
         
-
+        let logoAddress=$('#logo-border img').attr('src');
 
 
         $(window).resize(function(){
@@ -30,7 +30,7 @@
             if($(window).width()<=450){
                 $('#logo-container a').html(`<i class="fas fa-praying-hands"></i>`);
             }else{
-                $('#logo-container a').html(`<img src="/images/finalgif.gif" alt="">`);
+                $('#logo-container a').html(`<img src="${logoAddress}" alt="">`);
             }
         });
         if($(window).width()<690 && flag){
