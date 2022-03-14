@@ -10,7 +10,7 @@ class chatEngine{
         this.userEmail=useremail;
         this.userId=userid.toString();
         this.username=username;
-        this.socket=io.connect('http://localhost:5000');
+        this.socket=io.connect('http://50.19.145.241:5000');
         
         if(this.userEmail){
             this.connectionHandler();
