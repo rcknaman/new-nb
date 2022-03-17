@@ -34,7 +34,16 @@
 
           <div class="post-form">
             <div class="mini-profile">
-              <div class="profile-pic"></div>
+                <div class="img-container" >
+
+                  <% if(user.avatar){ %>
+                    <img src="<%= user.avatar %>" alt="">
+                  <% }else{ %>
+                    <i class="fas fa-user"></i>
+                  <% } %>  
+
+
+                </div>
               <div class="user-name">name</div>
 
             </div>
