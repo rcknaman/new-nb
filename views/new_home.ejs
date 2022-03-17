@@ -34,7 +34,7 @@
 
           <div class="post-form">
             <div class="mini-profile">
-                <div class="img-container" >
+                <div class="img-container profile-pic" >
 
                   <% if(user.avatar){ %>
                     <img src="<%= user.avatar %>" alt="">
@@ -44,7 +44,7 @@
 
 
                 </div>
-              <div class="user-name">name</div>
+              <div class="user-name"><%= user.name%></div>
 
             </div>
             <div id="post-input-modal">
