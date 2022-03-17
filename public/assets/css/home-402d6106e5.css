@@ -75,7 +75,10 @@
   height: 50px;
   width: 50px;
   margin: 3px;
-  border: 1px solid black; }
+  border: 1px solid black; 
+  overflow:hidden;
+  background-color:black;
+}
 
 .mini-profile {
   display: flex;
@@ -297,11 +300,20 @@ audio::-webkit-media-controls-panel {
 
 @keyframes ripple {
   20% {
-    box-shadow: 0px 0px 0px 6px #fff, 0px 0px 0px 8px #B92B27; }
+    box-shadow: 0px 0px 0px 6px #fff,
+ 0px 0px 0px 8px #B92B27; }
   50% {
-    box-shadow: 0px 0px 0px 6px #fff, 0px 0px 0px 8px #B92B27, 0px 0px 0px 14px #fff, 0px 0px 2px 16px #888; }
+    box-shadow: 0px 0px 0px 6px #fff,
+ 0px 0px 0px 8px #B92B27,
+ 0px 0px 0px 14px #fff,
+ 0px 0px 2px 16px #888; }
   100% {
-    box-shadow: 0px 0px 0px 6px #fff, 0px 0px 0px 8px #B92B27, 0px 0px 0px 14px #fff, 0px 0px 2px 16px #888,  0px 0px 0px 22px #fff, 0px 0px 5px 24px #ddd; } }
+    box-shadow: 0px 0px 0px 6px #fff,
+ 0px 0px 0px 8px #B92B27,
+ 0px 0px 0px 14px #fff,
+ 0px 0px 2px 16px #888, 
+ 0px 0px 0px 22px #fff,
+ 0px 0px 5px 24px #ddd; } }
 
 .concentric-circles {
   color: #B92B27;
