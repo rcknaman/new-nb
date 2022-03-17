@@ -35,6 +35,7 @@ header .img-container {
   border: 1px solid #7e4442;
   border-radius: 50%;
   overflow: hidden;
+  margin:0;
   transition: all ease-in-out .2s; }
 
 header .img-container:hover {
