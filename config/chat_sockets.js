@@ -33,7 +33,7 @@ module.exports.chatSockets=async function(socketServer){
 
     let io=require('socket.io')(socketServer,{
         cors:{
-            origin:'http://50.19.145.241.nip.io:8000',
+            origin:'*',
             methods:['GET','POST']
         }
     });
