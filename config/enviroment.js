@@ -78,6 +78,7 @@ const production={
         options: {stream:accessLogStream}
     }
 }
+console.log("process type",process.env.codial_enviroment);
 module.exports=eval(process.env.codial_enviroment)==undefined?development:eval(process.env.codial_enviroment);
 // module.exports=development;
 // module.exports=development;
