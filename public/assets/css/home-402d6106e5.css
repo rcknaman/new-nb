@@ -42,7 +42,8 @@
   align-items: center;
   flex-direction: column;
   justify-content: center; }
-
+.post-form .profile-pic img{
+  height:90%;}
 #post-input-modal > input {
   align-self: start;
   height: 100%;
