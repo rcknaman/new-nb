@@ -56,7 +56,7 @@
         <div id="send-msg"><button type="submit"><i class="fas fa-angle-double-right"></i></button></div>
     </form> -->
     <form id="create-msg" method="post" action='/message/create'>
-        <div id="input-msg"><input type="text" placeholder="text here..."  name="message"></div>
+        <div id="input-msg"><input type="text" placeholder="text here..."  name="message" autocomplete="off"></div>
         <input name="sentTo" type="hidden" value="<%= friendOrGroupId %>">
         
         <div id="send-msg"><button type="submit"><i class="fas fa-angle-double-right"></i></button></div>
