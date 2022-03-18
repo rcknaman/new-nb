@@ -1,3 +1,7 @@
+<% let photoCount= post.image.length%> 
+<% let videoCount= post.video.length%> 
+<% let audioCount= post.audio.length%> 
+<% if( photoCount+videoCount+audioCount!=0 || post.content.length){ %> 
 <div class="post" id="post-<%= post._id %>">
    
   <div class="post-header-container">
@@ -43,9 +47,7 @@
     </p>
     <div class="user-text"><%= post.content %> </div>
   </div>
-  <% let photoCount= post.image.length%> 
-  <% let videoCount= post.video.length%> 
-  <% let audioCount= post.audio.length%> 
+
   <% if(photoCount+videoCount+audioCount!=0){ %>
       <div class="post-content">
         <div id="post<%= post._id %>-card" class="carousel slide post-items" data-bs-interval="false">
@@ -298,3 +300,4 @@
     </div>
   </div>
  </div>
+<% } %>
