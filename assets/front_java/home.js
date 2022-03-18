@@ -353,8 +353,11 @@
           fileCountSender();
           $(uploadLink).click();
         }else{
-          finalPost();
-          $("#new-post-form").submit();
+          let str=$(uploadLink).prop('href');
+          let count=0;
+          $(uploadLink).prop('href',str+count);
+          fileCountSender();
+          $(uploadLink).click();
         }
 
 
