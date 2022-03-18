@@ -291,7 +291,7 @@
 <!-- ------------------------------------- -->
           </div>
           <form class="modal-footer" id="comment-create-<%= post._id %>" method="post" action="/comment/create">
-            <div class="comment-input-div"><input name="comment" class="form-control" type="text" placeholder="Comment here.." aria-label="default input example"></div>
+            <div class="comment-input-div"><input name="comment" class="form-control" type="text" placeholder="Comment here.." aria-label="default input example" autocomplete="off"></div>
             <input type="hidden" name="postid" value="<%= post._id %>">
             <button type="submit" class="comment-send"><i class="fas fa-angle-double-right"></i></button>
           </form>
