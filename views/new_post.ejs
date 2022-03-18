@@ -1,7 +1,7 @@
 <% let photoCount= post.image.length%> 
 <% let videoCount= post.video.length%> 
 <% let audioCount= post.audio.length%> 
-<% if( photoCount+videoCount+audioCount!=0 || post.content.length){ %> 
+<% if( photoCount+videoCount+audioCount!=0 || (post.content && post.content.length)){ %> 
 <div class="post" id="post-<%= post._id %>">
    
   <div class="post-header-container">
